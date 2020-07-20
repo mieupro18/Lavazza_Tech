@@ -19,7 +19,7 @@ const AppNavigator = createStackNavigator(
     Lavazza: BottomNavigation,
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: RouteName,
   },
 );
 

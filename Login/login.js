@@ -23,7 +23,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userMail:'',
+      userName:'',
       password:'',
       spinner:false,
       connectionType:'',
@@ -53,13 +53,13 @@ export default class Login extends Component {
 
 
   validateLogin =async()=>{
-    if( (this.state.userMail.length === 0) || (this.state.password.length === 0) ){
+    if( (this.state.userName.length === 0) || (this.state.password.length === 0) ){
         alert("Please Enter the Login details");
     }
     else{
-        if(this.state.userMail==='admin' && this.state.password==='admin'){
+        if(this.state.userName==='admin' && this.state.password==='admin'){
 
-          AsyncStorage.setItem('lavazzaLoginToken', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1OTQ3MDg3NDYsImlzcyI6IkxhXFwvQFpBIn0.kZhIygpVvMBlAIkjVyH7_dw1Ym2eo5qOG9HYKyJxR38qMipUbI14-vjfQx-86xyQbnmrXRZq9j-0Bt4M7LtvpuZgGOlpZCKFb4BZkOMSIaqZauVwfij5Oz8Rwgyxfz0B9YpQ7c-CiP1DEjlZwydol9ALMofkAXUYtpiLMjnY8Hni4PRAI6Y1AxncT48merbBUwP4n8QNwPo4BwTXgoJliTKlng_ZxN-G-5-dBt8323h3NBGSvLu_7YXhwkK0xDKH9CcBiL03C7OrCWD00ZmDloRY763z9OhT0dtl3esNvIjym5kS1c2qJrolmxAjGOwhiIiBxpa7kaMc0xzKkAnYyw');
+          AsyncStorage.setItem('lavazzaLoginToken', 'secret');
           this.props.navigation.navigate('Lavazza');
         }
         else{
@@ -98,8 +98,8 @@ export default class Login extends Component {
               <Body>
                 <Form style={{width: '100%'}}>
                   <Item floatingLabel>
-                    <Label>User Mail Id</Label>
-                    <Input name='userMail' onChangeText={async(value)=>{await this.setState({userMail:value})}}/>
+                    <Label>User Name</Label>
+                    <Input name='userName' onChangeText={async(value)=>{await this.setState({userMail:value})}}/>
                   </Item>
                   <Item floatingLabel last>
                     <Label>Password</Label>
@@ -116,6 +116,7 @@ export default class Login extends Component {
                       marginLeft: 'auto',
                       marginRight: 'auto',
                       marginBottom: 30,
+                      backgroundColor:'#182C61'
                     }}>
                     <Text style={{marginLeft: 'auto'}}>Log In</Text>
                   </Button>
