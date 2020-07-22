@@ -11,7 +11,6 @@ import {
     Label,
     Input,
     Item,
-    Picker,
     Spinner
 } from 'native-base';
 import NetInfo from '@react-native-community/netinfo';
@@ -23,19 +22,15 @@ class WifiInfo extends Component {
             deviceType: '',
             connectionType:'',
             isConnected:false,
-            token:'hai',
             wifiInfo:'',
             password:'',
-            isWifiScreenLoading:false
+            isWifiDataFetching:false
         }
     }
     async componentDidMount(){
         const networkConnectionInfo = NetInfo.addEventListener(async state => {
     
           await this.setState({connectionType:state.type, isConnected:state.isConnected});
-    
-          console.log("Connection type", state.type);
-          console.log("Is connected?", state.isConnected);
 
           await this.fetchWifiData();
         });
@@ -43,12 +38,11 @@ class WifiInfo extends Component {
 
 
       fetchWifiData = async() =>{
-        console.log(this.state);
-  
-        if(this.state.token!=='' && this.state.token!==null){
+          if(this.state.connectionType==='wifi' && this.state.isConnected===true){
+          await this.setState({isWifiDataFetching:true});
   
         
-        fetch('https://0732ad524106.ngrok.io/techapp/wifiInfo',{
+        fetch('http://192.168.5.1:9876/techapp/wifiInfo',{
           headers:{
   
             tokenId:'secret'
@@ -57,19 +51,18 @@ class WifiInfo extends Component {
         })
         .then((response)=> response.json())
         .then(async(resultData)=>{
-          console.log(resultData);
           if(resultData['status']==='Success'){
               
             await this.setState({wifiInfo:resultData['data'], isWifiScreenLoading:false});
   
           }
+          await this.setState({isWifiDataFetching:false});
           
         })
         .catch(async(e)=>{
+            await this.setState({isWifiDataFetching:false});
           alert(e);
-          await this.setState({isWifiScreenLoading:false})
         })
-      }
       }
   
       networkConnectionFailed = ()=>{
@@ -84,11 +77,12 @@ class WifiInfo extends Component {
           { cancelable: true }
         );
       }
+    }
 
       submitWifiDetails = async() =>{
 
-        if(this.state.ssid!=='' && this.state.password!==''){
-            fetch('https://0732ad524106.ngrok.io/techapp/configureWifiInfo',{
+        if(this.state.ssid!==''){
+            fetch('http://192.168.5.1:9876/techapp/configureWifiInfo',{
                 method:'POST',
                 headers:{
                     "tokenId":'secret',
@@ -98,14 +92,13 @@ class WifiInfo extends Component {
                 body:JSON.stringify({
                     data:{
                         ssid:this.state.ssid,
-                        password:this.state.password
+                        //password:this.state.password
                     }
                 })
 
             })
             .then(response => response.json())
             .then(async(resultData)=>{
-                console.log(resultData);
                 if(resultData['status']==='Success'){
 
                     let newConfiguredData = {};
@@ -145,13 +138,11 @@ class WifiInfo extends Component {
     render() {
         return (
             <View>
-                {this.state.isWifiScreenLoading===true?(
-                    <Spinner color='blue'/>
-
-                ):(
 
 
-                (this.state.connectionType !== 'wifi' && this.state.isConnected!==true) ? (
+
+                {(this.state.connectionType !== 'wifi' || this.state.isConnected!==true) ? (
+                    
                     <View>
                     <Image
                     style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
@@ -160,9 +151,17 @@ class WifiInfo extends Component {
 
                     <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
                     </View>
-                ) : (
+                ) : (    
+                    
+                    this.state.isWifiDataFetching===true?(
+                        <View>
+                            <Spinner color='#182c61'>
 
-                                    
+                            </Spinner>
+                            <Text style={{textAlign:'center'}}>Loading... Please Wait!</Text>
+                            </View>
+
+                    ):(
                          <View style={{}}>
                         
                             {this.state.isEditWifiInfo === false ? (
@@ -184,10 +183,10 @@ class WifiInfo extends Component {
                                         <Text style={{ fontSize: 20 }}>{this.state.wifiInfo.ssid===null?('Not Set'):(this.state.wifiInfo.ssid)}</Text>
                                     </View>
 
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '95%' }}>
+                                    {/*<View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '95%' }}>
                                         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Password</Text>
                                         <Text style={{ fontSize: 20 }}>{this.state.wifiInfo.password===null?('Not Set'):(this.state.wifiInfo.password)}</Text>
-                                    </View>
+                        </View>*/}
 
                                     <Button
                                         rounded
@@ -203,16 +202,9 @@ class WifiInfo extends Component {
                                         }}
 
                                         onPress={async () => { await this.setState({ isEditWifiInfo: true }) }}
-
-
-
                                     >
                                         <Text style={{ marginLeft: 'auto', color: '#fff' }}>Edit Details</Text>
                                     </Button>
-
-
-
-
                                 </CardItem>
                                 </Card>
                                 ):( 
@@ -241,10 +233,10 @@ class WifiInfo extends Component {
                                                 <Input name='ssid' onChangeText={async (value) => { await this.setState({ ssid: value }) }} />
                                             </Item>
 
-                                            <Item >
+                                            {/*<Item >
                                                 <Label>Password</Label>
                                                 <Input name='ssid' onChangeText={async (value) => { await this.setState({ password: value }) }} />
-                                            </Item>
+                                            </Item>*/}
 
                                             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
                                                 <Button
@@ -257,9 +249,7 @@ class WifiInfo extends Component {
                                                         backgroundColor: '#f1f2f6'
 
                                                     }}
-
                                                     onPress={async () => { await this.setState({ isEditWifiInfo: false }) }}
-
                                                 >
                                                     <Text style={{ marginLeft: 'auto', color: '#000' }}>Cancel</Text>
                                                 </Button>
@@ -275,7 +265,6 @@ class WifiInfo extends Component {
                                                     }}
 
                                                     onPress={()=>{this.submitWifiDetails()}}
-
                                                 >
                                                     <Text style={{ color: '#fff' }}>Submit</Text>
                                                 </Button>
@@ -287,8 +276,9 @@ class WifiInfo extends Component {
 
                                 )}
 
-                    </View>
-                ))}
+                    </View>)
+                    
+                )}
 
             </View>
         );
