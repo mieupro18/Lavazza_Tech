@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Device: {
