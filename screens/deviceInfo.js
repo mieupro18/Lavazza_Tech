@@ -13,22 +13,10 @@ import {
     Input,
     Item, 
     Picker,
-    Toast
+    Spinner
   } from 'native-base';
   import NetInfo from "@react-native-community/netinfo";
 
-  import AsyncStorage from '@react-native-community/async-storage';
-
-
-  const showToastWithGravityAndOffset = () => {
-    ToastAndroid.showWithGravityAndOffset(
-      "A wild toast appeared!",
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
-  };
 
 
 class DeviceInfo extends Component {
@@ -42,59 +30,72 @@ class DeviceInfo extends Component {
           deviceId:'',
           connectionType:'',
           isConnected:false,
-          token:'hai',
-          deviceData:''
+          deviceData:'',
+          isDeviceDataFetching:false
          }
     }
 
+    // Check Network connection info
     async componentDidMount(){
       const networkConnectionInfo = NetInfo.addEventListener(async state => {
-  
         await this.setState({connectionType:state.type, isConnected:state.isConnected});
-  
-        console.log("Connection type", state.type);
-        console.log("Is connected?", state.isConnected);
-        console.log("Is connected?", state.details);
-        
+        console.log(this.state);
+        await this.fetchDeviceData();
+        });
+        }
 
-        
-        AsyncStorage.getItem('lavazzaLoginToken').then(async(value)=>{
-          await this.setState({token:value});
-
-          await this.fetchDeviceData();
-        })
-        
-      });
-    }
-
+        // Fetching Device Details
     fetchDeviceData = async() =>{
-      console.log(this.state);
-
-      if(this.state.token!=='' && this.state.token!==null){
-
-      
-      fetch('https://0732ad524106.ngrok.io/techapp/deviceInfo',{
+      if(this.state.connectionType==='wifi' && this.state.isConnecred===true){
+      await this.setState({isDeviceDataFetching:true});
+      fetch('http://192.168.5.1:9876/techapp/deviceInfo',{
         headers:{
-
           tokenId:'secret'
         }
 
       })
       .then((response)=> response.json())
       .then(async(resultData)=>{
-        console.log(resultData);
+        console.log("fetch:",resultData);
         if(resultData['status']==='Success'){
           await this.setState({deviceData:resultData['data']});
-
         }
+        await this.setState({isDeviceDataFetching:false});
         
       })
-      .catch((e)=>{
+      .catch(async(e)=>{
+        await this.setState({isDeviceDataFetching:false});
         alert(e);
       })
     }
+
     }
 
+    // Send Device Reboot request
+    reboot = async () =>{
+      fetch('http://192.168.5.1:9876/techapp/reboot',{
+        headers:{
+          tokenId:'secret',
+        }
+      })
+      .then((response)=> response.json())
+      .then(async(resultData)=>{
+        if(resultData.status === 'Success'){
+          ToastAndroid.showWithGravityAndOffset(
+            "Success:  "+resultData['infoText'],
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25,
+            50
+          );
+        }
+      })
+      .catch(e =>{
+        alert(e)
+      })
+    }
+
+    // Alert if network signal disconnected
     networkConnectionFailed = ()=>{
       Alert.alert(
         'Network Failed',
@@ -109,14 +110,11 @@ class DeviceInfo extends Component {
     }
 
 
+    // Post Product Info
     submitDeviceDetails = async() =>{
-
-      console.log(this.state)
-
       if(this.state.deviceName!=='' && this.state.deviceId!=='' && this.state.deviceType!==''){
 
-      
-      fetch("https://0732ad524106.ngrok.io/techapp/configureDeviceInfo",{
+      fetch("http://192.168.5.1:9876/techapp/configureDeviceInfo",{
         method:'POST',
         headers:{
           tokenId:'secret',
@@ -132,14 +130,8 @@ class DeviceInfo extends Component {
           })})
         .then((response)=> response.json())
         .then(async(resultData)=>{
-          console.log(resultData)
 
           if(resultData['status']==='Success'){
-
-
-
-
-
             var newConfigureData = {}
 
             newConfigureData['deviceName']=this.state.deviceName,
@@ -188,7 +180,7 @@ class DeviceInfo extends Component {
     render() { 
         return ( 
             <View>
-                    {this.state.connectionType!=='wifi' && this.state.isConnected!==true ?(
+                    {this.state.connectionType!=='wifi' || this.state.isConnected!==true ?(
                       
                       <View>
                     <Image
@@ -199,6 +191,17 @@ class DeviceInfo extends Component {
                     <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
 
                     </View>):(
+                    
+                    this.state.isDeviceDataFetching===true?(
+                      <View>
+                            <Spinner color='#182c61'>
+
+                            </Spinner>
+                            <Text style={{textAlign:'center'}}>Loading... Please Wait!</Text>
+                            </View>
+
+                    ):(
+
                       this.state.deviceData!==''?(
         <View style={{}}>
           <Card
@@ -230,7 +233,7 @@ class DeviceInfo extends Component {
                 <View style={{flexDirection:'row', width:'100%', justifyContent:'space-around'}}>
 
                 <Button
-                            
+                            onPress={()=>{this.reboot()}}
                             style={{
                               justifyContent:'center',
                               width:'40%',
@@ -258,16 +261,10 @@ class DeviceInfo extends Component {
                     }}
 
                   onPress={async()=>{await this.setState({isEditDeviceInfo:true})}}
-                    
-            
-                    
                     >
                     <Text style={{marginLeft: 5, color:'#fff'}}>Edit Details</Text>
                   </Button>
-
-
-
-                            </View>
+                  </View>
                   </CardItem>
                   ):(
                     <CardItem style={{flexDirection:'column',alignItems:'flex-start'}}>
@@ -297,9 +294,7 @@ class DeviceInfo extends Component {
               {this.state.deviceData.allDeviceTypes.map((type)=>{
                 return <Picker.Item label={type} value={type} />
               })}
-              {/* <Picker.Item label="---Select Type---" value="" />
-              <Picker.Item label="Retro Fit" value="retrofit" />
-              <Picker.Item label="Kitchen Type" value="kitchenType" /> */}
+
               
             </Picker>
             </Item>
@@ -332,9 +327,6 @@ class DeviceInfo extends Component {
                     }}
 
                     onPress={()=>{this.submitDeviceDetails()}}
-                    
-                    
-                    
                     >
 
                     <Text style={{color:'#fff'}}>Submit</Text>
@@ -345,9 +337,6 @@ class DeviceInfo extends Component {
                   </CardItem>
 
                   )}
-
-              
-            
           </Card>
         </View>
         ):(
@@ -361,6 +350,7 @@ class DeviceInfo extends Component {
           </View>
 
         )
+                    )
         )}
 
             </View>

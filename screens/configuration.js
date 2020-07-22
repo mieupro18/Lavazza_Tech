@@ -2,11 +2,8 @@ import React from 'react';
 import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {
-  Container,
-  Content,
   Form,
   Item,
-  Input,
   Label,
   Card,
   CardItem,
@@ -14,6 +11,7 @@ import {
   Body,
   Button,
   Picker,
+  Spinner
 
 } from 'native-base';
 
@@ -27,8 +25,6 @@ class ConfigurationScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
-
             allProducts:[
                 'Cappuccino', 
                 'Espresso', 
@@ -40,14 +36,15 @@ class ConfigurationScreen extends React.Component {
                 'Milk'],
 
 
-                isEditProducts:false,
+            isEditProducts:false,
 
-                    selectedIndex:'',
+            selectedIndex:'',
 
             deviceProductInfo:'',
             connectionType:'',
             isConnected:false,
-            token:'hai'
+
+            isProductDataFetching:false
         };
       }
 
@@ -55,43 +52,36 @@ class ConfigurationScreen extends React.Component {
         const metworkConnectionInfo = NetInfo.addEventListener(async state => {
     
           await this.setState({connectionType:state.type, isConnected:state.isConnected});
-    
-          console.log("Connection type", state.type);
-          console.log("Is connected?", state.isConnected);
-          console.log(this.state);
-
           await this.fetchProductData()
         });
       }
 
-      fetchProductData = async() =>{
-        console.log(this.state);
-  
-        if(this.state.token!=='' && this.state.token!==null){
-  
-        
-        fetch('https://0732ad524106.ngrok.io/techapp/productInfo',{
+      // Fetch All products Information
+      fetchProductData = async() =>{   
+        await this.setState({isProductDataFetching:true});  
+        fetch('http://192.168.5.1:9876/techapp/productInfo',{
           headers:{
-  
             tokenId:'secret'
           }
   
         })
         .then((response)=> response.json())
         .then(async(resultData)=>{
-          console.log(resultData);
           if(resultData['status']==='Success'){
             await this.setState({deviceProductInfo:resultData['data']});
-  
           }
+          await this.setState({isProductDataFetching:false});
           
         })
-        .catch((e)=>{
+        .catch(async(e)=>{
+          await this.setState({isProductDataFetching:false});
           alert(e);
         })
+
       }
-      }
-  
+
+
+      // Wifi connection failed
       networkConnectionFailed = ()=>{
         Alert.alert(
           'Network Failed',
@@ -107,11 +97,9 @@ class ConfigurationScreen extends React.Component {
 
 
       editProducts = async() =>{
-
         var isInvalidConfiguration=false;
 
         Object.keys(this.state.deviceProductInfo).map((productKey)=>{
-
           if(this.state[productKey]==='' || this.state[productKey]=== undefined){
             isInvalidConfiguration=true;
           }
@@ -120,7 +108,6 @@ class ConfigurationScreen extends React.Component {
 
         if(!isInvalidConfiguration){
           let configuredProductValues = []
-
             Object.keys(this.state.deviceProductInfo).map((productKey)=>{
               configuredProductValues.push(this.state[productKey]);
             })
@@ -149,7 +136,8 @@ class ConfigurationScreen extends React.Component {
                 configuredProductData[productKey] = this.state[productKey];
               });
 
-              fetch('https://0732ad524106.ngrok.io/techapp/configureProductInfo',{
+              // POST New Product Configure Data
+              fetch('http://192.168.5.1:9876/techapp/configureProductInfo',{
                 method:'POST',
                 headers:{
                   tokenId:'secret',
@@ -163,8 +151,6 @@ class ConfigurationScreen extends React.Component {
               .then(async(resultData)=>{
                 if(resultData['status']==='Success'){
 
-
-                  console.log(configuredProductData)
                   await this.setState({deviceProductInfo:configuredProductData, isEditProducts:false});
 
                   Object.keys(this.state.deviceProductInfo).map(async(productKey)=>{
@@ -223,10 +209,17 @@ class ConfigurationScreen extends React.Component {
         <ScrollView>
           {this.state.connectionType==='wifi' && this.state.isConnected===true ? (
 
-            this.state.deviceProductInfo!==''?(
-<View style={{flex:1,}}>
+            this.state.isProductDataFetching===true?(
+              <View>
+              <Spinner color='#182C61'>
+                
+              </Spinner>
+              <Text style={{textAlign:'center'}}>Loading... Please wait!</Text>
+              </View>
+            ):(
 
-    
+            this.state.deviceProductInfo!==''?(
+            <View style={{flex:1,}}>
         <View style={{}}>
           <Card
             style={{
@@ -239,9 +232,6 @@ class ConfigurationScreen extends React.Component {
             </CardItem>
             <CardItem>
               <Body>
-         
-
-      
                   {Object.keys(this.state.deviceProductInfo).map((productKey, index)=>{
                       return(
                         <View style={{flexDirection:'row', padding:2, width:'95%'}}>
@@ -389,6 +379,7 @@ class ConfigurationScreen extends React.Component {
         <Text style={{textAlign:'center'}}>Something Went Wrong...! Please Try Again</Text>
         </View>
       )
+            )
 
 ):(
   <View>
