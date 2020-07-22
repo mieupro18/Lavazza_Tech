@@ -31,27 +31,16 @@ export default class Login extends Component {
     };
   }
 
+
   async componentDidMount(){
-    const unsubscribe = NetInfo.addEventListener(async state => {
-
+    const neworkConnectionInfo = NetInfo.addEventListener(async state => {
       await this.setState({connectionType:state.type, isConnected:state.isConnected});
-
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-      console.log(this.state);
     });
 
-    
-    
-    // AsyncStorage.getItem('token').then(async(value)=>{
-    //   if(value !== null){
-    //     await this.props.navigation.navigate('Home');
-    //   }
-    // });
   }
 
 
-
+// Logi Form Validation
   validateLogin =async()=>{
     if( (this.state.userName.length === 0) || (this.state.password.length === 0) ){
         alert("Please Enter the Login details");
@@ -65,19 +54,13 @@ export default class Login extends Component {
         else{
           alert("Invalid Login... Please Try Again...!");
         }
-            }
-          
-    
+      }
 };
 
 
 
   render() {
     return (
-
-
-
-
       <Container>
         <Image source={require('../lavazza_logo.png')} style={{width:'80%', height:'30%', marginLeft:'auto', marginRight:'auto'}} />
         {this.state.connectionType==='wifi' && this.state.isConnected===true?(
@@ -127,15 +110,13 @@ export default class Login extends Component {
         </Content>
         ):(
           <Content>
+            <View>
+              <Image
+                style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
+                source={require('../warning.png')}/>
 
-<View>
-                    <Image
-                    style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
-                    source={require('../warning.png')}
-                    />
-
-                    <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
-                    </View>
+                <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
+              </View>
         
         </Content>)}
       </Container>
