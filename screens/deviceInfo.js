@@ -39,14 +39,13 @@ class DeviceInfo extends Component {
     async componentDidMount(){
       const networkConnectionInfo = NetInfo.addEventListener(async state => {
         await this.setState({connectionType:state.type, isConnected:state.isConnected});
-        console.log(this.state);
         await this.fetchDeviceData();
         });
         }
 
         // Fetching Device Details
     fetchDeviceData = async() =>{
-      if(this.state.connectionType==='wifi' && this.state.isConnecred===true){
+      if(this.state.connectionType==='wifi' && this.state.isConnected===true){
       await this.setState({isDeviceDataFetching:true});
       fetch('http://192.168.5.1:9876/techapp/deviceInfo',{
         headers:{
@@ -56,7 +55,6 @@ class DeviceInfo extends Component {
       })
       .then((response)=> response.json())
       .then(async(resultData)=>{
-        console.log("fetch:",resultData);
         if(resultData['status']==='Success'){
           await this.setState({deviceData:resultData['data']});
         }
