@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import SERVERIP from '../Utilities/serverip';
 import {
   Form,
   Item,
@@ -15,9 +16,6 @@ import {
 
 } from 'native-base';
 
-import NetInfo from "@react-native-community/netinfo";
-
-import AsyncStorage from '@react-native-community/async-storage';
 
 class ConfigurationScreen extends React.Component {
 
@@ -41,25 +39,19 @@ class ConfigurationScreen extends React.Component {
             selectedIndex:'',
 
             deviceProductInfo:'',
-            connectionType:'',
-            isConnected:false,
 
             isProductDataFetching:false
         };
       }
 
       async componentDidMount(){
-        const metworkConnectionInfo = NetInfo.addEventListener(async state => {
-    
-          await this.setState({connectionType:state.type, isConnected:state.isConnected});
           await this.fetchProductData()
-        });
       }
 
       // Fetch All products Information
       fetchProductData = async() =>{   
         await this.setState({isProductDataFetching:true});  
-        fetch('http://192.168.5.1:9876/techapp/productInfo',{
+          fetch(SERVERIP+'/techapp/productInfo',{
           headers:{
             tokenId:'secret'
           }
@@ -67,6 +59,7 @@ class ConfigurationScreen extends React.Component {
         })
         .then((response)=> response.json())
         .then(async(resultData)=>{
+          console.log(this.props.navigation.isFocused());
           if(resultData['status']==='Success'){
             await this.setState({deviceProductInfo:resultData['data']});
           }
@@ -75,27 +68,22 @@ class ConfigurationScreen extends React.Component {
         })
         .catch(async(e)=>{
           await this.setState({isProductDataFetching:false});
-          alert(e);
+          if(this.props.navigation.isFocused()){
+            ToastAndroid.showWithGravityAndOffset(
+              e,
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+              25,
+              50
+            );
+        }
+
         })
 
       }
 
 
-      // Wifi connection failed
-      networkConnectionFailed = ()=>{
-        Alert.alert(
-          'Network Failed',
-          'Check Your Wifi Connection & Try Again',
-          [
-            {
-              text: 'Close',
-            }
-          ],
-          { cancelable: true }
-        );
-      }
-
-
+// Send Edit product request to server
       editProducts = async() =>{
         var isInvalidConfiguration=false;
 
@@ -111,23 +99,19 @@ class ConfigurationScreen extends React.Component {
             Object.keys(this.state.deviceProductInfo).map((productKey)=>{
               configuredProductValues.push(this.state[productKey]);
             })
-
             var uniqueProducts = [...new Set(configuredProductValues)]
 
             if(uniqueProducts.length !==8){
-
               Alert.alert(
                 'Duplicate Configuration',
                 'Please remove duplicate configuration',
                 [
                   {
                     text: 'Close',
-                    onPress: () => console.log('Ask me later pressed')
                   }
                 ],
                 { cancelable: true }
               );
-
             }
             else{
 
@@ -137,7 +121,7 @@ class ConfigurationScreen extends React.Component {
               });
 
               // POST New Product Configure Data
-              fetch('http://192.168.5.1:9876/techapp/configureProductInfo',{
+              fetch(SERVERIP+'/techapp/configureProductInfo',{
                 method:'POST',
                 headers:{
                   tokenId:'secret',
@@ -183,7 +167,13 @@ class ConfigurationScreen extends React.Component {
                 }
               })
               .catch((e)=>{
-                alert(e);
+                ToastAndroid.showWithGravityAndOffset(
+                  "Error:  "+e,
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                  25,
+                  50
+                );
               })
             }
         }
@@ -200,16 +190,13 @@ class ConfigurationScreen extends React.Component {
             { cancelable: true }
           );
         }
-
       }
 
   render() {
     return (
         <SafeAreaView>
         <ScrollView>
-          {this.state.connectionType==='wifi' && this.state.isConnected===true ? (
-
-            this.state.isProductDataFetching===true?(
+            {this.state.isProductDataFetching===true?(
               <View>
               <Spinner color='#182C61'>
                 
@@ -234,7 +221,7 @@ class ConfigurationScreen extends React.Component {
               <Body>
                   {Object.keys(this.state.deviceProductInfo).map((productKey, index)=>{
                       return(
-                        <View style={{flexDirection:'row', padding:2, width:'95%'}}>
+                        <View style={{flexDirection:'row', padding:2, width:'95%', flex:1, flexWrap:'wrap', flexGrow:1,}}>
                             {this.state.isEditProducts===true?(
                                                     <Form style={{width: '100%'}}>
                                                     <Item
@@ -295,8 +282,8 @@ class ConfigurationScreen extends React.Component {
                                                       </Item>
                                                       </Form>
                             ):([
-                            <Text style={{fontSize:20,fontWeight:'bold'}}>{productKey}:</Text>,
-                            <Text style={{ fontSize:19,flexWrap:'wrap', paddingLeft:10}}>{this.state.deviceProductInfo[productKey]}</Text>
+                            <Text style={{fontSize:18,fontWeight:'bold', color:'blue'}}>{productKey}:</Text>,
+                            <Text style={{ fontSize:16,  paddingLeft:10}}>{this.state.deviceProductInfo[productKey]}</Text>
                             ])}
                         
                             </View>)
@@ -314,7 +301,7 @@ class ConfigurationScreen extends React.Component {
                       marginTop:20,
                       backgroundColor:'#182C61',
                       width:'65%',
-                      justifyContent:'space-between'
+                      justifyContent:'center'
 
                     }}
                     
@@ -322,7 +309,7 @@ class ConfigurationScreen extends React.Component {
                     
                     >
                     
-                    <Text style={{marginLeft:3}}>Edit Products</Text>
+                    <Text style={{}}>Edit Products</Text>
                   </Button>
                   </View>
                   )}
@@ -381,16 +368,7 @@ class ConfigurationScreen extends React.Component {
       )
             )
 
-):(
-  <View>
-                    <Image
-                    style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
-                    source={require('../warning.png')}
-                    />
-
-                    <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
-                    </View>
-)}
+}
       </ScrollView>
       </SafeAreaView>
 
