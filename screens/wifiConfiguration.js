@@ -13,7 +13,9 @@ import {
     Item,
     Spinner
 } from 'native-base';
-import NetInfo from '@react-native-community/netinfo';
+
+import SERVERIP from '../Utilities/serverip';
+
 class WifiInfo extends Component {
     constructor(props) {
         super(props);
@@ -28,21 +30,17 @@ class WifiInfo extends Component {
         }
     }
     async componentDidMount(){
-        const networkConnectionInfo = NetInfo.addEventListener(async state => {
-    
-          await this.setState({connectionType:state.type, isConnected:state.isConnected});
-
           await this.fetchWifiData();
-        });
+
       }
 
 
       fetchWifiData = async() =>{
-          if(this.state.connectionType==='wifi' && this.state.isConnected===true){
+        
           await this.setState({isWifiDataFetching:true});
   
         
-        fetch('http://192.168.5.1:9876/techapp/wifiInfo',{
+        fetch(SERVERIP+'/techapp/wifiInfo',{
           headers:{
   
             tokenId:'secret'
@@ -51,6 +49,7 @@ class WifiInfo extends Component {
         })
         .then((response)=> response.json())
         .then(async(resultData)=>{
+            console.log(this.props.navigation.isFocused());
           if(resultData['status']==='Success'){
               
             await this.setState({wifiInfo:resultData['data'], isWifiScreenLoading:false});
@@ -61,28 +60,26 @@ class WifiInfo extends Component {
         })
         .catch(async(e)=>{
             await this.setState({isWifiDataFetching:false});
-          alert(e);
+            if(this.props.navigation.isFocused()){
+                            ToastAndroid.showWithGravityAndOffset(
+                e,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25,
+                50
+              );
+            
+            }
+
+
         })
       }
   
-      networkConnectionFailed = ()=>{
-        Alert.alert(
-          'Network Failed',
-          'Check Your Wifi Connection & Try Again',
-          [
-            {
-              text: 'Close',
-            }
-          ],
-          { cancelable: true }
-        );
-      }
-    }
 
       submitWifiDetails = async() =>{
 
         if(this.state.ssid!==''){
-            fetch('http://192.168.5.1:9876/techapp/configureWifiInfo',{
+            fetch(SERVERIP+'/techapp/configureWifiInfo',{
                 method:'POST',
                 headers:{
                     "tokenId":'secret',
@@ -92,7 +89,6 @@ class WifiInfo extends Component {
                 body:JSON.stringify({
                     data:{
                         ssid:this.state.ssid,
-                        //password:this.state.password
                     }
                 })
 
@@ -103,9 +99,8 @@ class WifiInfo extends Component {
 
                     let newConfiguredData = {};
                     newConfiguredData['ssid']= this.state.ssid;
-                    newConfiguredData['password'] = this.state.password;
 
-                    await this.setState({wifiInfo:newConfiguredData, ssid:'', password:'', isEditWifiInfo:false});
+                    await this.setState({wifiInfo:newConfiguredData, ssid:'', isEditWifiInfo:false});
 
                     ToastAndroid.showWithGravityAndOffset(
                         "Success:  "+resultData['infoText'],
@@ -118,7 +113,7 @@ class WifiInfo extends Component {
                 }
                 else{
 
-                    await this.setState({ssid:'', password:'', isEditWifiInfo:false});
+                    await this.setState({ssid:'', isEditWifiInfo:false});
 
                     ToastAndroid.showWithGravityAndOffset(
                         "Failed:  "+resultData['infoText'],
@@ -135,25 +130,11 @@ class WifiInfo extends Component {
             })
         }
       }
+    
     render() {
         return (
             <View>
-
-
-
-                {(this.state.connectionType !== 'wifi' || this.state.isConnected!==true) ? (
-                    
-                    <View>
-                    <Image
-                    style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
-                    source={require('../warning.png')}
-                    />
-
-                    <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
-                    </View>
-                ) : (    
-                    
-                    this.state.isWifiDataFetching===true?(
+                    {this.state.isWifiDataFetching===true?(
                         <View>
                             <Spinner color='#182c61'>
 
@@ -179,8 +160,8 @@ class WifiInfo extends Component {
                                 <CardItem style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '95%' }}>
-                                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>SSID</Text>
-                                        <Text style={{ fontSize: 20 }}>{this.state.wifiInfo.ssid===null?('Not Set'):(this.state.wifiInfo.ssid)}</Text>
+                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>SSID</Text>
+                                        <Text style={{ fontSize: 16 }}>{this.state.wifiInfo.ssid===null?('Not Set'):(this.state.wifiInfo.ssid)}</Text>
                                     </View>
 
                                     {/*<View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '95%' }}>
@@ -225,6 +206,9 @@ class WifiInfo extends Component {
                                     marginLeft: 'auto',
                                     marginRight: 'auto',
                                 }}>
+                                                                <CardItem header style={{ justifyContent: 'center', backgroundColor: '#182C61' }}>
+                                <Text style={{ fontSize: 20, color: '#fff' }}>Wifi Info</Text>
+                            </CardItem>
                                     <CardItem style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
 
                                         <Form style={{ width: '100%' }}>
@@ -277,8 +261,7 @@ class WifiInfo extends Component {
                                 )}
 
                     </View>)
-                    
-                )}
+                    }
 
             </View>
         );
