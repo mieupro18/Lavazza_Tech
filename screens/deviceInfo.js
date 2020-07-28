@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { View, Text, Alert, Image, ToastAndroid } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import { View, Text, Alert, Image, ToastAndroid, BackHandler } from 'react-native';
+import SERVERIP from '../Utilities/serverip';
 
 import {
 
@@ -37,9 +37,15 @@ class DeviceInfo extends Component {
 
     // Check Network connection info
     async componentDidMount(){
+
+      
       const networkConnectionInfo = NetInfo.addEventListener(async state => {
         await this.setState({connectionType:state.type, isConnected:state.isConnected});
-        await this.fetchDeviceData();
+        if(this.state.connectionType==='wifi' && this.state.isConnected===true){
+          console.log('connected success');
+          await this.fetchDeviceData();
+        }
+        
         });
         }
 
@@ -47,7 +53,7 @@ class DeviceInfo extends Component {
     fetchDeviceData = async() =>{
       if(this.state.connectionType==='wifi' && this.state.isConnected===true){
       await this.setState({isDeviceDataFetching:true});
-      fetch('http://192.168.5.1:9876/techapp/deviceInfo',{
+        fetch(SERVERIP+'/techapp/deviceInfo',{
         headers:{
           tokenId:'secret'
         }
@@ -55,6 +61,9 @@ class DeviceInfo extends Component {
       })
       .then((response)=> response.json())
       .then(async(resultData)=>{
+        console.log("fetch:",resultData);
+        console.log(this.props.navigation.isFocused());
+
         if(resultData['status']==='Success'){
           await this.setState({deviceData:resultData['data']});
         }
@@ -63,7 +72,18 @@ class DeviceInfo extends Component {
       })
       .catch(async(e)=>{
         await this.setState({isDeviceDataFetching:false});
-        alert(e);
+        
+        if(this.props.navigation.isFocused()){
+          ToastAndroid.showWithGravityAndOffset(
+            e,
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25,
+            50
+          );
+      
+      }
+
       })
     }
 
@@ -71,7 +91,8 @@ class DeviceInfo extends Component {
 
     // Send Device Reboot request
     reboot = async () =>{
-      fetch('http://192.168.5.1:9876/techapp/reboot',{
+        fetch(SERVERIP+'/techapp/reboot',{
+        
         headers:{
           tokenId:'secret',
         }
@@ -80,39 +101,30 @@ class DeviceInfo extends Component {
       .then(async(resultData)=>{
         if(resultData.status === 'Success'){
           ToastAndroid.showWithGravityAndOffset(
-            "Success:  "+resultData['infoText'],
+            "Reboot Initiated",
             ToastAndroid.LONG,
             ToastAndroid.CENTER,
             25,
             50
           );
+          BackHandler.exitApp()
         }
+
       })
       .catch(e =>{
-        alert(e)
+        console.log(e);
       })
     }
 
-    // Alert if network signal disconnected
-    networkConnectionFailed = ()=>{
-      Alert.alert(
-        'Network Failed',
-        'Check Your Wifi Connection & Try Again',
-        [
-          {
-            text: 'Close',
-          }
-        ],
-        { cancelable: true }
-      );
-    }
 
 
     // Post Product Info
     submitDeviceDetails = async() =>{
       if(this.state.deviceName!=='' && this.state.deviceId!=='' && this.state.deviceType!==''){
 
-      fetch("http://192.168.5.1:9876/techapp/configureDeviceInfo",{
+      // fetch("http://192.168.5.1:9876/techapp/configureDeviceInfo",{
+        fetch(SERVERIP+"/techapp/configureDeviceInfo",{
+        
         method:'POST',
         headers:{
           tokenId:'secret',
@@ -215,18 +227,18 @@ class DeviceInfo extends Component {
             <CardItem style={{flexDirection:'column',alignItems:'flex-start'}}>
 
                          <View style={{flexDirection:'row', justifyContent:'space-between', width:'95%'}}>
-                  <Text style={{fontSize:20,fontWeight:'bold'}}>Device Id</Text>
-            <Text style={{fontSize:18}}>{this.state.deviceData.deviceId===null?("Not Set"):(this.state.deviceData.deviceId)}</Text>
+                  <Text style={{fontSize:18,fontWeight:'bold'}}>Device Id</Text>
+            <Text style={{fontSize:16}}>{this.state.deviceData.deviceId===null?("Not Set"):(this.state.deviceData.deviceId)}</Text>
                 </View>
 
                 <View style={{flexDirection:'row', justifyContent:'space-between', width:'95%'}}>
-                  <Text style={{fontSize:20,fontWeight:'bold'}}>Device Name</Text>
-                  <Text style={{fontSize:18}}>{this.state.deviceData.deviceName===null?("Not Set"):(this.state.deviceData.deviceName)}</Text>
+                  <Text style={{fontSize:18,fontWeight:'bold'}}>Device Name</Text>
+                  <Text style={{fontSize:16}}>{this.state.deviceData.deviceName===null?("Not Set"):(this.state.deviceData.deviceName)}</Text>
                 </View>
 
                 <View style={{flexDirection:'row', justifyContent:'space-between', width:'95%'}}>
-                  <Text style={{fontSize:20,fontWeight:'bold'}}>Device Type</Text>
-                  <Text style={{fontSize:20}}>{this.state.deviceData.deviceType === null?("Not Set"):(this.state.deviceData.deviceType)}</Text>
+                  <Text style={{fontSize:18,fontWeight:'bold'}}>Device Type</Text>
+                  <Text style={{fontSize:16}}>{this.state.deviceData.deviceType === null?("Not Set"):(this.state.deviceData.deviceType)}</Text>
                 </View>
                 <View style={{flexDirection:'row', width:'100%', justifyContent:'space-around'}}>
 
