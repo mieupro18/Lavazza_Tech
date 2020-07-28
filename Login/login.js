@@ -16,7 +16,6 @@ import {
 
 import { Alert, BackHandler, Image, View} from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 
 export default class Login extends Component {
@@ -31,7 +30,7 @@ export default class Login extends Component {
     };
   }
 
-
+// Get Connection status
   async componentDidMount(){
     const neworkConnectionInfo = NetInfo.addEventListener(async state => {
       await this.setState({connectionType:state.type, isConnected:state.isConnected});
@@ -42,18 +41,25 @@ export default class Login extends Component {
 
 // Logi Form Validation
   validateLogin =async()=>{
+    console.log(this.state);
     if( (this.state.userName.length === 0) || (this.state.password.length === 0) ){
         alert("Please Enter the Login details");
     }
     else{
+      if(this.state.connectionType==='wifi' && this.state.isConnected===true){
+
+      
         if(this.state.userName==='admin' && this.state.password==='admin'){
 
-          AsyncStorage.setItem('lavazzaLoginToken', 'secret');
-          this.props.navigation.navigate('Lavazza');
+          this.props.navigation.replace('LavAzza');
         }
         else{
           alert("Invalid Login... Please Try Again...!");
         }
+      }
+      else{
+        alert("Check Your Wifi COnnection");
+      }
       }
 };
 
@@ -63,7 +69,6 @@ export default class Login extends Component {
     return (
       <Container>
         <Image source={require('../lavazza_logo.png')} style={{width:'80%', height:'30%', marginLeft:'auto', marginRight:'auto'}} />
-        {this.state.connectionType==='wifi' && this.state.isConnected===true?(
         <Content>
           
           <Card
@@ -80,11 +85,11 @@ export default class Login extends Component {
             <CardItem>
               <Body>
                 <Form style={{width: '100%'}}>
-                  <Item floatingLabel>
+                  <Item >
                     <Label>User Name</Label>
-                    <Input name='userName' onChangeText={async(value)=>{await this.setState({userMail:value})}}/>
+                    <Input name='userName' onChangeText={async(value)=>{await this.setState({userName:value})}}/>
                   </Item>
-                  <Item floatingLabel last>
+                  <Item last>
                     <Label>Password</Label>
                     <Input name='password' onChangeText={async(value)=>{await this.setState({password:value})}} />
                   </Item>
@@ -108,17 +113,7 @@ export default class Login extends Component {
             </CardItem>
           </Card>
         </Content>
-        ):(
-          <Content>
-            <View>
-              <Image
-                style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
-                source={require('../warning.png')}/>
 
-                <Text style={{textAlign:'center'}}>Check Your Wifi Connection</Text>
-              </View>
-        
-        </Content>)}
       </Container>
     );
   }
