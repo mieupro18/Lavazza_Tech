@@ -11,6 +11,8 @@ import {
   Text,
   Body,
   Button,
+  CheckBox,
+  ListItem
   
 } from 'native-base';
 
@@ -89,11 +91,16 @@ export default class Login extends Component {
                     <Label>User Name</Label>
                     <Input name='userName' onChangeText={async(value)=>{await this.setState({userName:value})}}/>
                   </Item>
-                  <Item last>
+                  <Item >
                     <Label>Password</Label>
-                    <Input name='password' onChangeText={async(value)=>{await this.setState({password:value})}} />
+                    <Input name='password' type='password' secureTextEntry={true} onChangeText={async(value)=>{await this.setState({password:value})}} />
                   </Item>
-
+                  {/* <ListItem>
+            <CheckBox checked={false} />
+            <Body>
+              <Text>Show Password</Text>
+            </Body>
+          </ListItem> */}
                   <Button
                     rounded
                     onPress={() => {this.validateLogin()}}
