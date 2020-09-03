@@ -4,9 +4,9 @@ import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-import Configuration from '../screens/configuration';
-import DeviceInfo from '../screens/deviceInfo';
-import WifiInfo from '../screens/wifiConfiguration';
+import ProductConfig from '../screens/productConfiguration';
+import DeviceConfig from '../screens/deviceConfiguration';
+import WifiConfig from '../screens/wifiConfiguration';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Device: {
-      screen: DeviceInfo,
+      screen: DeviceConfig,
       navigationOptions: {
         tabBarLabel: 'Device Info',
         tabBarIcon: ({tintColor}) => (
@@ -34,7 +34,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },
 
     Products: {
-      screen: Configuration,
+      screen: ProductConfig,
       navigationOptions: {
         tabBarLabel: 'Products Info',
         tabBarIcon: ({tintColor}) => (
@@ -48,9 +48,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },
 
     WiFi: {
-        screen: WifiInfo,
+        screen: WifiConfig,
         navigationOptions: {
-          tabBarLabel: 'WiFi Config',
+          tabBarLabel: 'WiFi Info',
           tabBarIcon: ({tintColor}) => (
             <View>
               <Icon style={[{color: tintColor}]} size={22} name={"wifi"} />
