@@ -61,13 +61,14 @@ class WifiInfo extends Component {
         .catch(async(e)=>{
             await this.setState({isWifiDataFetching:false});
             if(this.props.navigation.isFocused()){
-                            ToastAndroid.showWithGravityAndOffset(
-                e,
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-                25,
-                50
-              );
+                alert(e);
+            //                 ToastAndroid.showWithGravityAndOffset(
+            //     e,
+            //     ToastAndroid.LONG,
+            //     ToastAndroid.CENTER,
+            //     25,
+            //     50
+            //   );
             
             }
 
