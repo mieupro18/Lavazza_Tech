@@ -1,4 +1,4 @@
-#Thu Jul 30 14:42:09 IST 2020
-base.0=C\:\\Users\\HMI\\Lavazza_Tech\\android\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
-renamed.0=classes.dex
+#Thu Sep 03 17:29:56 IST 2020
+base.0=C\:\\Users\\HAI\\Documents\\GitHub\\Lavazza_Tech\\android\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
+renamed.0=classes.dex

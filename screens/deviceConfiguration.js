@@ -102,6 +102,17 @@ class DeviceInfo extends Component {
           );
           BackHandler.exitApp()
         }
+        else if(resultData.status === 'Failure'){
+          if(resultData.infoText === 'config error'){
+          ToastAndroid.showWithGravityAndOffset(
+            "Reboot Failed. Please configure all parameters",
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25,
+            50
+          );
+          }
+        }
 
       })
       .catch(e =>{
