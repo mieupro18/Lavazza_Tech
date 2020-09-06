@@ -13,6 +13,7 @@ const AppNavigator = createStackNavigator(
     LavAzza: BottomNavigation,
   },
   {
+    headerMode: 'none',
     initialRouteName: 'Login',
   },
 );

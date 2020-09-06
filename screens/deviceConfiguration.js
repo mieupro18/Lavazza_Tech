@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Text, Alert, Image, ToastAndroid, BackHandler } from 'react-native';
+import { View, Text, Alert, Image, ToastAndroid, BackHandler, StyleSheet } from 'react-native';
 import SERVERIP from '../Utilities/serverip';
 
 import {
@@ -16,6 +16,10 @@ import {
     Spinner
   } from 'native-base';
 import {Row, Col, Grid} from 'react-native-easy-grid';
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
 
 
 
@@ -198,7 +202,17 @@ class DeviceInfo extends Component {
     render() { 
         return ( 
             <View style={{}}>                    
-                      
+                      <View style={{backgroundColor: '#100A45',
+    height: responsiveScreenHeight(7),
+    alignItems: 'center',
+    justifyContent: 'center',}}>
+        <Image
+          style={{width: responsiveScreenWidth(50),
+            height: responsiveScreenHeight(5),
+            resizeMode: 'contain',}}
+          source={require('../assets/lavazza_white_logo.png')}
+        />
+      </View>
                     
                     {this.state.isDeviceDataFetching===true?(
                       <View style={{justifyContent:'center', marginLeft:'auto', marginRight:'auto'}}>

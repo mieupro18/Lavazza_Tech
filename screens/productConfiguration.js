@@ -15,6 +15,10 @@ import {
   Spinner
 
 } from 'native-base';
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 
@@ -219,6 +223,17 @@ class ConfigurationScreen extends React.Component {
     return (
         <SafeAreaView>
         <ScrollView>
+        <View style={{backgroundColor: '#100A45',
+    height: responsiveScreenHeight(7),
+    alignItems: 'center',
+    justifyContent: 'center',}}>
+        <Image
+          style={{width: responsiveScreenWidth(50),
+            height: responsiveScreenHeight(5),
+            resizeMode: 'contain',}}
+          source={require('../assets/lavazza_white_logo.png')}
+        />
+      </View>
             {this.state.isProductDataFetching===true?(
               <View>
               <Spinner color='#182C61'>

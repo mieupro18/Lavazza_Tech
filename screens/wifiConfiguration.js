@@ -13,6 +13,10 @@ import {
     Item,
     Spinner
 } from 'native-base';
+import {
+    responsiveScreenHeight,
+    responsiveScreenWidth,
+  } from 'react-native-responsive-dimensions';
 
 import SERVERIP from '../Utilities/serverip';
 
@@ -135,6 +139,17 @@ class WifiInfo extends Component {
     render() {
         return (
             <View>
+                <View style={{backgroundColor: '#100A45',
+    height: responsiveScreenHeight(7),
+    alignItems: 'center',
+    justifyContent: 'center',}}>
+        <Image
+          style={{width: responsiveScreenWidth(50),
+            height: responsiveScreenHeight(5),
+            resizeMode: 'contain',}}
+          source={require('../assets/lavazza_white_logo.png')}
+        />
+      </View>
                     {this.state.isWifiDataFetching===true?(
                         <View>
                             <Spinner color='#182c61'>

@@ -1,22 +1,16 @@
-import React, { Component } from 'react';
-
+import React, {Component} from 'react';
 
 import StackNavigator from './Navigation/stackNavigation';
-
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {  
-      
-    }
+    this.state = {};
   }
-  
-  render() { 
-    return (
-      <StackNavigator/>
-      );
+
+  render() {
+    return <StackNavigator />;
   }
 }
- 
+
 export default App;

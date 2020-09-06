@@ -1,20 +1,13 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {View} from 'react-native';
+import {createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
-import Icon from 'react-native-vector-icons/AntDesign';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import ProductConfig from '../screens/productConfiguration';
 import DeviceConfig from '../screens/deviceConfiguration';
 import WifiConfig from '../screens/wifiConfiguration';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
@@ -24,10 +17,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: 'Device Info',
         tabBarIcon: ({tintColor}) => (
           <View>
-            <Icon style={[{color: tintColor}]} size={22} name={'infocirlceo'} />
+            <FontAwesome5
+              style={[{color: tintColor}]}
+              size={22}
+              name={'info-circle'}
+            />
           </View>
         ),
-
         activeColor: '#fff',
         inactiveColor: '#ccc',
       },
@@ -39,7 +35,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarLabel: 'Products Info',
         tabBarIcon: ({tintColor}) => (
           <View>
-            <Icon style={[{color: tintColor}]} size={22} name={"rest"} />
+            <FontAwesome5
+              style={[{color: tintColor}]}
+              size={22}
+              name={'mug-hot'}
+            />
           </View>
         ),
         activeColor: '#fff',
@@ -48,26 +48,26 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },
 
     WiFi: {
-        screen: WifiConfig,
-        navigationOptions: {
-          tabBarLabel: 'WiFi Info',
-          tabBarIcon: ({tintColor}) => (
-            <View>
-              <Icon style={[{color: tintColor}]} size={22} name={"wifi"} />
-            </View>
-          ),
-          activeColor: '#fff',
-          inactiveColor: '#ccc',
-          
-        },
+      screen: WifiConfig,
+      navigationOptions: {
+        tabBarLabel: 'WiFi Info',
+        tabBarIcon: ({tintColor}) => (
+          <View>
+            <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />
+          </View>
+        ),
+        activeColor: '#fff',
+        inactiveColor: '#ccc',
       },
+    },
   },
   {
     initialRouteName: 'Device',
     activeColor: '#182C61',
+    headerMode: 'none',
     inactiveColor: '#000',
-    barStyle: {backgroundColor: '#182C61'},
-    shifting:true
+    barStyle: {backgroundColor: '#100A45'},
+    shifting: true,
   },
 );
 
