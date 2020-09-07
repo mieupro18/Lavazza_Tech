@@ -32,7 +32,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     Products: {
       screen: ProductConfig,
       navigationOptions: {
-        tabBarLabel: 'Products Info',
+        tabBarLabel: 'Product Info',
         tabBarIcon: ({tintColor}) => (
           <View>
             <FontAwesome5
@@ -50,7 +50,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     WiFi: {
       screen: WifiConfig,
       navigationOptions: {
-        tabBarLabel: 'WiFi Info',
+        tabBarLabel: 'Wifi Info',
         tabBarIcon: ({tintColor}) => (
           <View>
             <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />
@@ -63,9 +63,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
   },
   {
     initialRouteName: 'Device',
-    activeColor: '#182C61',
+    //activeColor: '#100A45',
     headerMode: 'none',
-    inactiveColor: '#000',
+    //inactiveColor: '#',
     barStyle: {backgroundColor: '#100A45'},
     shifting: true,
   },

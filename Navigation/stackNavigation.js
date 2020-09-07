@@ -1,19 +1,18 @@
 import React from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import Login from '../Login/login';
-
+import Login from '../screens/login';
 
 import BottomNavigation from './bottomNavigation';
-
 
 const AppNavigator = createStackNavigator(
   {
     Login: Login,
-    LavAzza: BottomNavigation,
+    technicianWindow: BottomNavigation,
   },
   {
     headerMode: 'none',
+    //initialRouteName: 'technicianWindow',
     initialRouteName: 'Login',
   },
 );

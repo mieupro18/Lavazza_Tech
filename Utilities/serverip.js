@@ -1,5 +1,8 @@
 // const IPADDRESS = 'http://192.168.43.207:9001';
 
-const IPADDRESS ='http://192.168.5.1:9876'
+const IPADDRESS = 'http://192.168.225.205:9876';
 
-export default IPADDRESS;
+const SERVER_URL = 'http://192.168.225.205:9876';
+const TOKEN = 'l@vA@zzacfd$';
+
+export {SERVER_URL, TOKEN, IPADDRESS};

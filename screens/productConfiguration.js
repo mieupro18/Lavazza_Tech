@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image} from 'react-native';
+import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image,TouchableHighlight} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import SERVERIP from '../Utilities/serverip';
+import {SERVER_URL} from '../Utilities/serverip';
 import {
   Form,
   Item,
@@ -12,12 +12,13 @@ import {
   Body,
   Button,
   Picker,
-  Spinner
+  Spinner,
 
 } from 'native-base';
 import {
   responsiveScreenHeight,
   responsiveScreenWidth,
+  responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
@@ -76,8 +77,8 @@ class ConfigurationScreen extends React.Component {
 
       // Fetch All products Information
       fetchProductData = async() =>{   
-        await this.setState({isProductDataFetching:true});  
-          fetch(SERVERIP+'/techapp/productInfo',{
+        await this.setState({isProductDataFetching:true,deviceProductInfo:''});  
+          fetch(SERVER_URL+'/techapp/productInfo',{
           headers:{
             tokenId:'secret'
           }
@@ -87,6 +88,7 @@ class ConfigurationScreen extends React.Component {
         .then(async(resultData)=>{
           console.log(this.props.navigation.isFocused());
           if(resultData['status']==='Success'){
+            console.log(resultData)
             await this.setState({deviceProductInfo:resultData['data']});
           }
           await this.setState({isProductDataFetching:false});
@@ -95,7 +97,7 @@ class ConfigurationScreen extends React.Component {
         .catch(async(e)=>{
           await this.setState({isProductDataFetching:false});
           if(this.props.navigation.isFocused()){
-            alert(e)
+            //alert(e)
             // ToastAndroid.showWithGravityAndOffset(
             //   e,
             //   ToastAndroid.LONG,
@@ -148,7 +150,7 @@ class ConfigurationScreen extends React.Component {
               });
 
               // POST New Product Configure Data
-              fetch(SERVERIP+'/techapp/configureProductInfo',{
+              fetch(SERVER_URL+'/techapp/configureProductInfo',{
                 method:'POST',
                 headers:{
                   tokenId:'secret',
@@ -221,9 +223,8 @@ class ConfigurationScreen extends React.Component {
 
   render() {
     return (
-        <SafeAreaView>
-        <ScrollView>
-        <View style={{backgroundColor: '#100A45',
+        <SafeAreaView style={{flex:1}}>
+          <View style={{backgroundColor: '#100A45',
     height: responsiveScreenHeight(7),
     alignItems: 'center',
     justifyContent: 'center',}}>
@@ -234,9 +235,10 @@ class ConfigurationScreen extends React.Component {
           source={require('../assets/lavazza_white_logo.png')}
         />
       </View>
+        <ScrollView>
             {this.state.isProductDataFetching===true?(
               <View>
-              <Spinner color='#182C61'>
+              <Spinner color='#100A45'>
                 
               </Spinner>
               <Text style={{textAlign:'center'}}>Loading... Please wait!</Text>
@@ -252,26 +254,43 @@ class ConfigurationScreen extends React.Component {
               marginLeft: 'auto',
               marginRight: 'auto',
             }}>
-            <CardItem header style={{justifyContent: 'center' ,backgroundColor:'#182C61'}}>
-              <Text style={{fontSize: 20, color:'#fff'}}>Product Configuration</Text>
-            </CardItem>
+              <CardItem header style={{
+    justifyContent: 'center',
+    backgroundColor: '#100A45',
+    height: responsiveScreenHeight(3),
+    width: '50%',
+    alignSelf: 'center',
+    borderRadius: 10,
+  }}>
+                <Text
+                  style={ {fontSize: 14, fontWeight: 'bold', color: '#fff'}}
+                  onPress={async () => {
+                    if (this.state.isEditProducts === false) {
+                      await this.fetchProductData();
+                    }
+                  }}>
+                  Product Info
+                </Text>
+              </CardItem>
             <CardItem>
               <Body>
                   {Object.keys(this.state.deviceProductInfo).map((productKey, index)=>{
+                    console.log(productKey,index)
                       return(
                         <View style={{flexDirection:'row', padding:2, width:'95%', flex:1, flexWrap:'wrap', flexGrow:1,}}>
                             {this.state.isEditProducts===true?(
                                                     <Form style={{width: '100%'}}>
                                                     <Item
                                                         picker
-                                                        style={{width: '95%', marginLeft: 15}}>
-                                                        <Label style={{color: 'blue', fontWeight: 'bold'}}>
+                                                        style={{width: '100%', marginLeft: 15,marginTop:'2%'}}>
+                                                        <Label style={{color: '#100A45', fontWeight: 'bold',fontSize:15,}}>
                                                           {productKey}
                                                         </Label>
+                                                        
                                                         <Picker
                                                           mode="dropdown"
                                                           iosIcon={<Icon name="arrow-down" />}
-                                    
+                                                        
                                                     placeholder="Select Product"
                                                           placeholderStyle={{color: '#bfc6ea'}}
                                                           placeholderIconColor="#007aff"
@@ -321,9 +340,9 @@ class ConfigurationScreen extends React.Component {
                                                       </Form>
                             ):([
                               <Grid>
-                              <Row style={{padding:5}}>
-                    <Col ><Text style={{fontSize:18,fontWeight:'bold', color:'blue'}}>{productKey}</Text></Col>
-                    <Col ><Text style={{ fontSize:16}}>{this.state.deviceProductInfo[productKey]}</Text></Col>
+                              <Row style={{padding:5,marginTop:'2%'}}>
+                    <Col ><Text style={{fontSize:15,fontWeight:'bold', color:'#100A45'}}>{productKey}</Text></Col>
+                    <Col ><Text style={{ fontSize:15}}>{this.state.deviceProductInfo[productKey]}</Text></Col>
                     </Row>
                   </Grid>
                             
@@ -342,7 +361,7 @@ class ConfigurationScreen extends React.Component {
                       
                       marginBottom: 30,
                       marginTop:20,
-                      backgroundColor:'#182C61',
+                      backgroundColor:'#100A45',
                       width:'65%',
                       justifyContent:'center'
 
@@ -381,7 +400,7 @@ class ConfigurationScreen extends React.Component {
                       
                       marginBottom: 30,
                       marginTop:20,
-                      backgroundColor:'#182C61'
+                      backgroundColor:'#100A45'
 
                     }}
 
@@ -400,14 +419,52 @@ class ConfigurationScreen extends React.Component {
       </View>
       ):(
 
-        <View>
-        <Image
-        style={{width:80, height:80, marginLeft:'auto', marginRight:'auto', marginTop:100}}
-        source={require('../warning.png')}
-        />
+        <View
+            style={{
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{
+                width: 80,
+                height: 80,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginTop: 100,
+              }}
+              source={require('../assets/warning.png')}
+            />
 
-        <Text style={{textAlign:'center'}}>Something Went Wrong...! Please Try Again</Text>
-        </View>
+            <Text style={{textAlign: 'center',fontSize:14 }}>Something Went Wrong...!</Text>
+            <Text style={{textAlign: 'center',fontSize:14}}>
+              Please check your wifi connection
+            </Text>
+            <TouchableHighlight
+              underlayColor="#100A45"
+              style={{
+                width: responsiveScreenWidth(25),
+                height: responsiveScreenHeight(5),
+                borderRadius: responsiveScreenHeight(1),
+                backgroundColor: '#100A45',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: responsiveScreenHeight(2),
+              }}
+              onPress={async () => {
+                await this.fetchProductData();
+                //Keyboard.dismiss();
+                //this.validateLogin();
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: responsiveScreenFontSize(1.5),
+                }}>
+                Try Again
+              </Text>
+            </TouchableHighlight>
+          </View>
       )
             )
 
