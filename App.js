@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import StackNavigator from './Navigation/stackNavigation';
+import StackNavigator from './src/navigation/stackNavigation';
 
 class App extends Component {
   constructor(props) {

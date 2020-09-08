@@ -6,64 +6,64 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="16"
-8-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml
+8-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="28" />
-9-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml
+9-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:4:5-67
-11-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:4:22-64
+11-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:4:5-67
+11-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:4:22-64
 12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-12-->[:react-native-community_netinfo] C:\Users\HMI\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:9:5-79
-12-->[:react-native-community_netinfo] C:\Users\HMI\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:9:22-76
+12-->[:react-native-community_netinfo] C:\Users\HAI\Documents\GitHub\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:9:5-79
+12-->[:react-native-community_netinfo] C:\Users\HAI\Documents\GitHub\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:9:22-76
 13    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-13-->[:react-native-community_netinfo] C:\Users\HMI\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:5-76
-13-->[:react-native-community_netinfo] C:\Users\HMI\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:22-73
+13-->[:react-native-community_netinfo] C:\Users\HAI\Documents\GitHub\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:5-76
+13-->[:react-native-community_netinfo] C:\Users\HAI\Documents\GitHub\Lavazza_Tech\node_modules\@react-native-community\netinfo\android\build\intermediates\library_manifest\release\AndroidManifest.xml:10:22-73
 14
 15    <application
-15-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:6:5-26:19
+15-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:6:5-26:19
 16        android:name="com.lavazza_tech.MainApplication"
-16-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:7:7-38
+16-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:7:7-38
 17        android:allowBackup="false"
-17-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:11:7-34
+17-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:11:7-34
 18        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-18-->[androidx.core:core:1.5.0-alpha01] C:\Users\HMI\.gradle\caches\transforms-2\files-2.1\e3ea0d618669db22333686d276e695ac\core-1.5.0-alpha01\AndroidManifest.xml:24:18-86
+18-->[androidx.core:core:1.5.0-alpha02] C:\Users\HAI\.gradle\caches\transforms-2\files-2.1\1c4cd0b5ff8c06b40379f14ed3bf728b\core-1.5.0-alpha02\AndroidManifest.xml:24:18-86
 19        android:icon="@mipmap/ic_launcher"
-19-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:9:7-41
+19-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:9:7-41
 20        android:label="@string/app_name"
-20-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:8:7-39
+20-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:8:7-39
 21        android:roundIcon="@mipmap/ic_launcher_round"
-21-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:10:7-52
+21-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:10:7-52
 22        android:theme="@style/AppTheme"
-22-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:13:7-38
+22-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:13:7-38
 23        android:usesCleartextTraffic="true" >
-23-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:12:7-42
+23-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:12:7-42
 24        <activity
-24-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:14:7-24:18
+24-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:14:7-24:18
 25            android:name="com.lavazza_tech.MainActivity"
-25-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:15:9-37
+25-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:15:9-37
 26            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-26-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:17:9-86
+26-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:17:9-86
 27            android:label="@string/app_name"
-27-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:16:9-41
+27-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:16:9-41
 28            android:launchMode="singleTask"
-28-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:18:9-40
+28-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:18:9-40
 29            android:windowSoftInputMode="adjustResize" >
-29-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:19:9-51
+29-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:19:9-51
 30            <intent-filter>
-30-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:20:9-23:25
+30-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:20:9-23:25
 31                <action android:name="android.intent.action.MAIN" />
-31-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:21:13-65
-31-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:21:21-62
+31-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:21:13-65
+31-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:21:21-62
 32
 33                <category android:name="android.intent.category.LAUNCHER" />
-33-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:22:13-73
-33-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:22:23-70
+33-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:22:13-73
+33-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:22:23-70
 34            </intent-filter>
 35        </activity>
 36        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-36-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:25:7-84
-36-->C:\Users\HMI\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:25:17-81
+36-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:25:7-84
+36-->C:\Users\HAI\Documents\GitHub\Lavazza_Tech\android\app\src\main\AndroidManifest.xml:25:17-81
 37    </application>
 38
 39</manifest>
