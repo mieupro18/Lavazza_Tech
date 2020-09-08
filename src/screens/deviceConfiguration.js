@@ -20,6 +20,7 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  RefreshControl,
   SafeAreaView,
 } from 'react-native';
 import {
@@ -27,7 +28,7 @@ import {
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import {SERVER_URL, TOKEN} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
@@ -226,7 +227,25 @@ class DeviceInfo extends Component {
             source={require('../../assets/lavazza_white_logo.png')}
           />
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={async () => {
+                if (this.state.isEditDeviceInfo === false) {
+                  this.setState({
+                    showToast: false,
+                    deviceType: null,
+                    deviceName: null,
+                    deviceId: null,
+                    deviceData: null,
+                    isLoading: false,
+                  });
+                  await this.fetchDeviceData();
+                }
+              }}
+            />
+          }>
           {this.state.isLoading === true ? (
             <View style={styles.spinnerContainer}>
               <Spinner color="#100A45" />
@@ -237,23 +256,7 @@ class DeviceInfo extends Component {
           ) : this.state.deviceData !== null ? (
             <Card style={styles.card}>
               <CardItem header style={styles.cardHeader}>
-                <Text
-                  style={styles.cardHeaderTextStyle}
-                  onPress={async () => {
-                    if (this.state.isEditDeviceInfo === false) {
-                      this.setState({
-                        showToast: false,
-                        deviceType: null,
-                        deviceName: null,
-                        deviceId: null,
-                        deviceData: null,
-                        isLoading: false,
-                      });
-                      await this.fetchDeviceData();
-                    }
-                  }}>
-                  Device Info
-                </Text>
+                <Text style={styles.cardHeaderTextStyle}>Device Info</Text>
               </CardItem>
               {this.state.isEditDeviceInfo === false ? (
                 <CardItem>
@@ -406,9 +409,15 @@ class DeviceInfo extends Component {
             </Card>
           ) : (
             <View style={styles.errorContainer}>
-              <Image
+              <Entypo
+                name="warning"
                 style={styles.warningImageStyle}
-                source={require('../../assets/warning.png')}
+                onPress={() => {
+                  this.setState({
+                    modalVisible: !this.state.modalVisible,
+                  });
+                }}
+                size={responsiveScreenHeight(10)}
               />
 
               <Text style={styles.errorTextStyle}>
@@ -483,7 +492,7 @@ const styles = StyleSheet.create({
   flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
   flexColumnContainer: {flex: 1, flexDirection: 'column'},
   fiftyPercentWidthContainer: {width: '50%'},
-  keyTextStyle: {fontSize: 14, fontWeight: 'bold'},
+  keyTextStyle: {fontSize: 14, color: '#100A45', fontWeight: 'bold'},
   valueTextStyle: {fontSize: 14},
   buttonContainer: {
     flexDirection: 'row',
@@ -509,7 +518,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: '#100A45',
   },
-  editButtonTextStyle: {fontSize: 14, marginLeft: 5, color: '#fff'},
+  editButtonTextStyle: {fontSize: 14, color: '#fff'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
   formItemTransparentStyle: {
@@ -543,7 +552,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {marginLeft: 5, color: '#000'},
+  cancelButtonTextStyle: {color: '#000'},
   submitButtonStyle: {
     justifyContent: 'space-around',
     width: '40%',
@@ -557,13 +566,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     alignItems: 'center',
   },
-  warningImageStyle: {
-    width: 80,
-    height: 80,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 100,
-  },
+  warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
   errorTextStyle: {textAlign: 'center'},
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),

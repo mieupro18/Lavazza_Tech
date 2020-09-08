@@ -9,7 +9,10 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import {Card, CardItem, Button, Form, Label, Item, Spinner} from 'native-base';
 import {
@@ -19,9 +22,8 @@ import {
 } from 'react-native-responsive-dimensions';
 
 import {SERVER_URL, TOKEN} from '../utilities/macros';
-import {ScrollView} from 'react-native-gesture-handler';
 import getTimeoutSignal from '../utilities/commonApis';
-import { SafeAreaView } from 'react-navigation';
+import {SafeAreaView} from 'react-navigation';
 
 class WifiInfo extends Component {
   constructor(props) {
@@ -148,7 +150,22 @@ class WifiInfo extends Component {
             source={require('../../assets/lavazza_white_logo.png')}
           />
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={async () => {
+                if (this.state.isEditWifiInfo === false) {
+                  this.setState({
+                    wifiInfo: null,
+                    isLoading: false,
+                    ssid: null,
+                  });
+                  await this.fetchWifiData();
+                }
+              }}
+            />
+          }>
           {this.state.isLoading === true ? (
             <View>
               <Spinner color="#182c61" />
@@ -159,20 +176,7 @@ class WifiInfo extends Component {
           ) : this.state.wifiInfo !== null ? (
             <Card style={styles.card}>
               <CardItem header style={styles.cardHeader}>
-                <Text
-                  style={styles.cardHeaderTextStyle}
-                  onPress={async () => {
-                    if (this.state.isEditWifiInfo === false) {
-                      this.setState({
-                        wifiInfo: null,
-                        isLoading: false,
-                        ssid: null,
-                      });
-                      await this.fetchWifiData();
-                    }
-                  }}>
-                  Wifi Info
-                </Text>
+                <Text style={styles.cardHeaderTextStyle}>Wifi Info</Text>
               </CardItem>
               {this.state.isEditWifiInfo === false ? (
                 <CardItem style={styles.flexColumnContainer}>
@@ -240,9 +244,15 @@ class WifiInfo extends Component {
             </Card>
           ) : (
             <View style={styles.errorContainer}>
-              <Image
+              <Entypo
+                name="warning"
                 style={styles.warningImageStyle}
-                source={require('../../assets/warning.png')}
+                onPress={() => {
+                  this.setState({
+                    modalVisible: !this.state.modalVisible,
+                  });
+                }}
+                size={responsiveScreenHeight(10)}
               />
 
               <Text style={styles.errorTextStyle}>
@@ -321,7 +331,7 @@ const styles = StyleSheet.create({
     //alignItems: 'flex-start',
   },
   fiftyPercentWidthContainer: {width: '50%'},
-  keyTextStyle: {fontSize: 14, fontWeight: 'bold'},
+  keyTextStyle: {fontSize: 14, color: '#100A45', fontWeight: 'bold'},
   valueTextStyle: {fontSize: 14},
   editButtonStyle: {
     justifyContent: 'center',
@@ -332,7 +342,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: '#100A45',
   },
-  editButtonTextStyle: {fontSize: 14, marginLeft: 5, color: '#fff'},
+  editButtonTextStyle: {fontSize: 14, color: '#fff'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
   formItemTransparentStyle: {
@@ -369,7 +379,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {marginLeft: 5, color: '#000'},
+  cancelButtonTextStyle: {color: '#000'},
   submitButtonStyle: {
     justifyContent: 'space-around',
     width: '40%',
@@ -384,11 +394,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   warningImageStyle: {
-    width: 80,
-    height: 80,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 100,
+    color: '#CECDCB',
+    marginTop: '10%',
   },
   errorTextStyle: {textAlign: 'center'},
   tryAgainButtonStyle: {
