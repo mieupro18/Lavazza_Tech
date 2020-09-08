@@ -1,7 +1,4 @@
 import React from 'react';
-import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image,TouchableHighlight} from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
-import {SERVER_URL} from '../utilities/macros';
 import {
   Form,
   Item,
@@ -13,14 +10,18 @@ import {
   Button,
   Picker,
   Spinner,
-
 } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 import {
   responsiveScreenHeight,
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import {View, SafeAreaView, ScrollView, TouchableOpacity,ToastAndroid, Alert, Image,TouchableHighlight} from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
+
+import {SERVER_URL, TOKEN} from '../utilities/macros';
+import getTimeoutSignal from '../utilities/commonApis';
 
 
 class ConfigurationScreen extends React.Component {
@@ -80,8 +81,9 @@ class ConfigurationScreen extends React.Component {
         await this.setState({isProductDataFetching:true,deviceProductInfo:''});  
           fetch(SERVER_URL+'/techapp/productInfo',{
           headers:{
-            tokenId:'secret'
-          }
+            tokenId:TOKEN
+          },
+          signal: (await getTimeoutSignal(5000)).signal,
   
         })
         .then((response)=> response.json())
@@ -162,9 +164,10 @@ class ConfigurationScreen extends React.Component {
               fetch(SERVER_URL+'/techapp/configureProductInfo',{
                 method:'POST',
                 headers:{
-                  tokenId:'secret',
+                  tokenId:TOKEN,
                   "Content-Type":'application/json'
                 },
+                signal: (await getTimeoutSignal(5000)).signal,
                 body:JSON.stringify({
                   data:configuredProductData
                 })
@@ -377,7 +380,7 @@ class ConfigurationScreen extends React.Component {
                       marginBottom: 30,
                       marginTop:20,
                       backgroundColor:'#100A45',
-                      width:'65%',
+                      width:'30%',
                       justifyContent:'center'
 
                     }}
@@ -386,7 +389,7 @@ class ConfigurationScreen extends React.Component {
                     
                     >
                     
-                    <Text style={{}}>Edit Products</Text>
+                    <Text style={{}}>Edit</Text>
                   </Button>
                   </View>
                   )}

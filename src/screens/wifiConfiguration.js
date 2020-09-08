@@ -21,6 +21,7 @@ import {
 import {SERVER_URL, TOKEN} from '../utilities/macros';
 import {ScrollView} from 'react-native-gesture-handler';
 import getTimeoutSignal from '../utilities/commonApis';
+import { SafeAreaView } from 'react-navigation';
 
 class WifiInfo extends Component {
   constructor(props) {
@@ -62,7 +63,7 @@ class WifiInfo extends Component {
   };
 
   submitWifiDetails = async () => {
-    if (this.state.ssid.length !== 0) {
+    if (this.state.ssid !== null && this.state.ssid.length !== 0) {
       this.setState({isLoading: true});
       fetch(SERVER_URL + '/techapp/configureWifiInfo', {
         method: 'POST',
@@ -140,7 +141,7 @@ class WifiInfo extends Component {
 
   render() {
     return (
-      <View>
+      <SafeAreaView style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <Image
             style={styles.logoStyleInHeader}
@@ -176,12 +177,16 @@ class WifiInfo extends Component {
               {this.state.isEditWifiInfo === false ? (
                 <CardItem style={styles.flexColumnContainer}>
                   <View style={styles.flexRowContainer}>
-                    <Text style={styles.keyTextStyle}>Wifi SSID</Text>
-                    <Text style={styles.valueTextStyle}>
-                      {this.state.wifiInfo.ssid === null
-                        ? 'Not Set'
-                        : this.state.wifiInfo.ssid}
-                    </Text>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.keyTextStyle}>Wifi SSID</Text>
+                    </View>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.valueTextStyle}>
+                        {this.state.wifiInfo.ssid === null
+                          ? 'Not Set'
+                          : this.state.wifiInfo.ssid}
+                      </Text>
+                    </View>
                   </View>
 
                   <Button
@@ -262,7 +267,7 @@ class WifiInfo extends Component {
             </View>
           )}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -306,13 +311,14 @@ const styles = StyleSheet.create({
   cardHeaderTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#fff'},
   flexRowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '95%',
+    //justifyContent: 'space-between',
+    //width: '95%',
   },
   flexColumnContainer: {
     flexDirection: 'column',
-    marginTop: 20,
-    alignItems: 'flex-start',
+    flex: 1,
+    marginTop: '5%',
+    //alignItems: 'flex-start',
   },
   fiftyPercentWidthContainer: {width: '50%'},
   keyTextStyle: {fontSize: 14, fontWeight: 'bold'},
@@ -320,7 +326,7 @@ const styles = StyleSheet.create({
   editButtonStyle: {
     justifyContent: 'center',
     marginTop: 25,
-    width: '40%',
+    width: '30%',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: 5,
@@ -344,7 +350,7 @@ const styles = StyleSheet.create({
     height: responsiveScreenHeight(5),
     width: '80%',
     textAlign: 'center',
-    color: '#100A45',
+    color: '#000',
     borderColor: 'gray',
     borderWidth: responsiveScreenWidth(0.1),
     borderRadius: responsiveScreenWidth(2),

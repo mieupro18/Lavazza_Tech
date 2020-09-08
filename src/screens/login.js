@@ -4,7 +4,6 @@ import {
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
-
 import {
   Alert,
   Image,
@@ -15,7 +14,6 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
-
 import NetInfo from '@react-native-community/netinfo';
 
 const technicianLoginCredentials = [

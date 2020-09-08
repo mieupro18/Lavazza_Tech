@@ -1,17 +1,4 @@
 import React, {Component} from 'react';
-
-import {
-  View,
-  Text,
-  Alert,
-  Image,
-  ToastAndroid,
-  BackHandler,
-  TouchableHighlight,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
-
 import {
   Card,
   CardItem,
@@ -23,14 +10,27 @@ import {
   Spinner,
 } from 'native-base';
 import {
+  View,
+  Text,
+  Alert,
+  Image,
+  ToastAndroid,
+  BackHandler,
+  TouchableHighlight,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
+import {
   responsiveScreenHeight,
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
-import {ScrollView} from 'react-native-gesture-handler';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {SERVER_URL, TOKEN} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class DeviceInfo extends Component {
   constructor(props) {
@@ -127,9 +127,10 @@ class DeviceInfo extends Component {
   // Post Product Info
   submitDeviceDetails = async () => {
     if (
+      this.state.deviceName !== null &&
       this.state.deviceName.length !== 0 &&
-      this.state.deviceId.length !== 0 &&
-      this.state.deviceType.length !== 0
+      (this.state.deviceId !== null && this.state.deviceId.length !== 0) &&
+      (this.state.deviceType !== null && this.state.deviceType.length !== 0)
     ) {
       this.setState({isLoading: true});
       fetch(SERVER_URL + '/techapp/configureDeviceInfo', {
@@ -218,7 +219,7 @@ class DeviceInfo extends Component {
   };
   render() {
     return (
-      <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <Image
             style={styles.logoStyleInHeader}
@@ -366,7 +367,7 @@ class DeviceInfo extends Component {
                             return (
                               <Picker.Item
                                 key={index}
-                                color="#100A45"
+                                color="#000"
                                 fontSize={10}
                                 label={type}
                                 value={type}
@@ -436,7 +437,7 @@ class DeviceInfo extends Component {
             </View>
           )}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   cardHeader: {
-    justifyContent:'center',
+    justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
     width: '50%',
@@ -526,7 +527,7 @@ const styles = StyleSheet.create({
     height: responsiveScreenHeight(5),
     width: '80%',
     textAlign: 'center',
-    color: '#100A45',
+    color: '#000',
     borderColor: 'gray',
     borderWidth: responsiveScreenWidth(0.1),
     borderRadius: responsiveScreenWidth(2),
