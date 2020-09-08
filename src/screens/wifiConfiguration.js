@@ -213,6 +213,7 @@ class WifiInfo extends Component {
                         defaultValue={this.state.ssid}
                         style={styles.textInput}
                         selectionColor="#100A45"
+                        maxLength={50}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />

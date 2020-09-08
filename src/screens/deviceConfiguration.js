@@ -327,6 +327,7 @@ class DeviceInfo extends Component {
                         defaultValue={this.state.deviceData.deviceId}
                         style={styles.textInput}
                         selectionColor="#100A45"
+                        maxLength={100}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceId =>
                           (this.state.deviceId = deviceId)
@@ -341,6 +342,7 @@ class DeviceInfo extends Component {
                         defaultValue={this.state.deviceData.deviceName}
                         style={styles.textInput}
                         selectionColor="#100A45"
+                        maxLength={100}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceName =>
                           (this.state.deviceName = deviceName)
