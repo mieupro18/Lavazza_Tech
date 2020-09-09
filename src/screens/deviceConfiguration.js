@@ -52,6 +52,18 @@ class DeviceInfo extends Component {
     await this.fetchDeviceData();
   }
 
+  setStateToInitialState = async () => {
+    this.setState({
+      showToast: false,
+      isEditDeviceInfo: false,
+      deviceType: null,
+      deviceName: null,
+      deviceId: null,
+      deviceData: null,
+      isLoading: false,
+    });
+  };
+
   // Fetching Device Details
   fetchDeviceData = async () => {
     this.setState({isLoading: true});
@@ -77,50 +89,6 @@ class DeviceInfo extends Component {
       })
       .catch(async e => {
         console.log(e);
-        this.setState({isLoading: false});
-      });
-  };
-
-  // Send Device Reboot request
-  reboot = async () => {
-    this.setState({isLoading: true});
-    fetch(SERVER_URL + '/techapp/reboot', {
-      headers: {
-        tokenId: TOKEN,
-      },
-      signal: (await getTimeoutSignal(5000)).signal,
-    })
-      .then(response => response.json())
-      .then(async resultData => {
-        if (resultData.status === 'Success') {
-          ToastAndroid.showWithGravityAndOffset(
-            'Reboot Initiated',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-            25,
-            50,
-          );
-          BackHandler.exitApp();
-        } else if (resultData.status === 'Failure') {
-          if (resultData.infoText === 'config error') {
-            ToastAndroid.showWithGravityAndOffset(
-              'Reboot Failed. Please provision all the device configurations ',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-              25,
-              50,
-            );
-          }
-        }
-        this.setState({isLoading: false});
-      })
-      .catch(e => {
-        console.log(e);
-        Alert.alert(
-          '',
-          'Check your Wifi connection with the lavazza caffè machine',
-          [{text: 'Ok'}],
-        );
         this.setState({isLoading: false});
       });
   };
@@ -233,14 +201,7 @@ class DeviceInfo extends Component {
               refreshing={false}
               onRefresh={async () => {
                 if (this.state.isEditDeviceInfo === false) {
-                  this.setState({
-                    showToast: false,
-                    deviceType: null,
-                    deviceName: null,
-                    deviceId: null,
-                    deviceData: null,
-                    isLoading: false,
-                  });
+                  await this.setStateToInitialState();
                   await this.fetchDeviceData();
                 }
               }}
@@ -248,73 +209,62 @@ class DeviceInfo extends Component {
           }>
           {this.state.isLoading === true ? (
             <View style={styles.spinnerContainer}>
-              <Spinner color="#100A45" />
+              <Spinner color="#100A45" size={30} />
               <Text style={styles.spinnerTextStyle}>
-                Loading... Please Wait!
+                Loading...{'\n'}Please Wait!
               </Text>
             </View>
           ) : this.state.deviceData !== null ? (
             <Card style={styles.card}>
               <CardItem header style={styles.cardHeader}>
-                <Text style={styles.cardHeaderTextStyle}>Device Info</Text>
+                <Text style={styles.cardHeaderTextStyle}>Device Identity</Text>
               </CardItem>
               {this.state.isEditDeviceInfo === false ? (
-                <CardItem>
-                  <View style={styles.flexColumnContainer}>
-                    <View style={styles.flexRowContainer}>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.keyTextStyle}>Device Id</Text>
-                      </View>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.valueTextStyle}>
-                          {this.state.deviceData.deviceId === null
-                            ? 'Not Set'
-                            : this.state.deviceData.deviceId}
-                        </Text>
-                      </View>
+                <CardItem style={styles.flexColumnContainer}>
+                  <View style={styles.flexRowContainer}>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.keyTextStyle}>Device Id</Text>
                     </View>
-                    <View style={styles.flexRowContainer}>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.keyTextStyle}>Device Name</Text>
-                      </View>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.valueTextStyle}>
-                          {this.state.deviceData.deviceName === null
-                            ? 'Not Set'
-                            : this.state.deviceData.deviceName}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.flexRowContainer}>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.keyTextStyle}>Device Type</Text>
-                      </View>
-                      <View style={styles.fiftyPercentWidthContainer}>
-                        <Text style={styles.valueTextStyle}>
-                          {this.state.deviceData.deviceType === null
-                            ? 'Not Set'
-                            : this.state.deviceData.deviceType}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                      <Button
-                        onPress={() => {
-                          this.reboot();
-                        }}
-                        style={styles.rebootButtonStyle}>
-                        <Text style={styles.rebootButtonTextStyle}>Reboot</Text>
-                      </Button>
-                      <Button
-                        rounded
-                        style={styles.editButtonStyle}
-                        onPress={async () => {
-                          this.setState({isEditDeviceInfo: true});
-                        }}>
-                        <Text style={styles.editButtonTextStyle}>Edit</Text>
-                      </Button>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.valueTextStyle}>
+                        {this.state.deviceData.deviceId === null
+                          ? 'Not Set'
+                          : this.state.deviceData.deviceId}
+                      </Text>
                     </View>
                   </View>
+                  <View style={styles.flexRowContainer}>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.keyTextStyle}>Device Name</Text>
+                    </View>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.valueTextStyle}>
+                        {this.state.deviceData.deviceName === null
+                          ? 'Not Set'
+                          : this.state.deviceData.deviceName}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.flexRowContainer}>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.keyTextStyle}>Device Type</Text>
+                    </View>
+                    <View style={styles.fiftyPercentWidthContainer}>
+                      <Text style={styles.valueTextStyle}>
+                        {this.state.deviceData.deviceType === null
+                          ? 'Not Set'
+                          : this.state.deviceData.deviceType}
+                      </Text>
+                    </View>
+                  </View>
+                  <Button
+                    rounded
+                    style={styles.editButtonStyle}
+                    onPress={async () => {
+                      this.setState({isEditDeviceInfo: true});
+                    }}>
+                    <Text style={styles.editButtonTextStyle}>Edit</Text>
+                  </Button>
                 </CardItem>
               ) : (
                 <CardItem style={styles.cardItemForm}>
@@ -423,7 +373,7 @@ class DeviceInfo extends Component {
               />
 
               <Text style={styles.errorTextStyle}>
-                Something Went Wrong...!
+                Something went wrong...!
               </Text>
               <Text style={styles.errorTextStyle}>
                 Please check your wifi connection
@@ -432,15 +382,7 @@ class DeviceInfo extends Component {
                 underlayColor="#100A45"
                 style={styles.tryAgainButtonStyle}
                 onPress={async () => {
-                  this.setState({
-                    showToast: false,
-                    isEditDeviceInfo: false,
-                    deviceType: null,
-                    deviceName: null,
-                    deviceId: null,
-                    deviceData: null,
-                    isLoading: false,
-                  });
+                  await this.setStateToInitialState();
                   await this.fetchDeviceData();
                 }}>
                 <Text style={styles.tryAgainButtonTextStyle}>Reload</Text>
@@ -475,7 +417,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center'},
+  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
   card: {
     width: '90%',
     marginLeft: 'auto',
@@ -501,20 +443,10 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-around',
   },
-  rebootButtonStyle: {
-    justifyContent: 'center',
-    width: '40%',
-    marginTop: 25,
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    backgroundColor: '#f1f2f6',
-    borderRadius: 100,
-  },
-  rebootButtonTextStyle: {fontSize: 14, marginLeft: 5, color: '#000'},
   editButtonStyle: {
     justifyContent: 'center',
     marginTop: 25,
-    width: '40%',
+    width: '30%',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: 5,

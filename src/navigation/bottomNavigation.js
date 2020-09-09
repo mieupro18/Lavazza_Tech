@@ -1,35 +1,35 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
+
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ProductConfig from '../screens/productConfiguration';
 import DeviceConfig from '../screens/deviceConfiguration';
 import WifiConfig from '../screens/wifiConfiguration';
+import SettingConfig from '../screens/settings';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
-    Device: {
+    DeviceIdentity: {
       screen: DeviceConfig,
       navigationOptions: {
-        tabBarLabel: 'Device Info',
+        tabBarLabel: 'Device Identity',
         tabBarIcon: ({tintColor}) => (
-          <View>
-            <FontAwesome5
-              style={[{color: tintColor}]}
-              size={22}
-              name={'info-circle'}
-            />
-          </View>
+          <Image
+            style={styles.imageStyle}
+            source={require('../../assets/coffee_machine_icon.png')}
+          />
         ),
         activeColor: '#fff',
-        inactiveColor: '#ccc',
+        inactiveColor: '#fff',
       },
     },
 
-    Products: {
+    ProductInfo: {
       screen: ProductConfig,
       navigationOptions: {
         tabBarLabel: 'Product Info',
@@ -43,11 +43,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
           </View>
         ),
         activeColor: '#fff',
-        inactiveColor: '#ccc',
+        inactiveColor: '#fff',
       },
     },
 
-    WiFi: {
+    WiFiInfo: {
       screen: WifiConfig,
       navigationOptions: {
         tabBarLabel: 'Wifi Info',
@@ -57,18 +57,32 @@ const TabNavigator = createMaterialBottomTabNavigator(
           </View>
         ),
         activeColor: '#fff',
-        inactiveColor: '#ccc',
+        inactiveColor: '#fff',
+      },
+    },
+    Settings: {
+      screen: SettingConfig,
+      navigationOptions: {
+        tabBarLabel: 'Settings',
+        tabBarIcon: ({tintColor}) => (
+          <View>
+            <FontAwesome5 style={[{color: tintColor}]} size={22} name={'cog'} />
+          </View>
+        ),
+        activeColor: '#fff',
+        inactiveColor: '#fff',
       },
     },
   },
   {
-    initialRouteName: 'Device',
-    //activeColor: '#100A45',
-    headerMode: 'none',
-    //inactiveColor: '#',
+    initialRouteName: 'DeviceIdentity',
     barStyle: {backgroundColor: '#100A45'},
     shifting: true,
   },
 );
 
 export default createAppContainer(TabNavigator);
+
+const styles = StyleSheet.create({
+  imageStyle: {width: '100%', height: '100%', resizeMode: 'contain'},
+});

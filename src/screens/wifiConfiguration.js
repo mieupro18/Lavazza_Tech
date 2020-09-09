@@ -39,6 +39,15 @@ class WifiInfo extends Component {
     await this.fetchWifiData();
   }
 
+  setStateToInitialState = async () => {
+    this.setState({
+      wifiInfo: null,
+      isEditWifiInfo: false,
+      isLoading: false,
+      ssid: null,
+    });
+  };
+
   fetchWifiData = async () => {
     this.setState({isLoading: true, wifiInfo: null});
     fetch(SERVER_URL + '/techapp/wifiInfo', {
@@ -156,21 +165,17 @@ class WifiInfo extends Component {
               refreshing={false}
               onRefresh={async () => {
                 if (this.state.isEditWifiInfo === false) {
-                  this.setState({
-                    wifiInfo: null,
-                    isLoading: false,
-                    ssid: null,
-                  });
+                  await this.setStateToInitialState();
                   await this.fetchWifiData();
                 }
               }}
             />
           }>
           {this.state.isLoading === true ? (
-            <View>
-              <Spinner color="#182c61" />
+            <View style={styles.spinnerContainer}>
+              <Spinner color="#182c61" size={30} />
               <Text style={styles.spinnerTextStyle}>
-                Loading... Please Wait!
+                Loading...{'\n'} Please Wait!
               </Text>
             </View>
           ) : this.state.wifiInfo !== null ? (
@@ -257,7 +262,7 @@ class WifiInfo extends Component {
               />
 
               <Text style={styles.errorTextStyle}>
-                Something Went Wrong...!
+                Something went wrong...!
               </Text>
               <Text style={styles.errorTextStyle}>
                 Please check your wifi connection
@@ -266,11 +271,7 @@ class WifiInfo extends Component {
                 underlayColor="#100A45"
                 style={styles.tryAgainButtonStyle}
                 onPress={async () => {
-                  this.setState({
-                    wifiInfo: null,
-                    isLoading: false,
-                    ssid: null,
-                  });
+                  await this.setStateToInitialState();
                   await this.fetchWifiData();
                 }}>
                 <Text style={styles.tryAgainButtonTextStyle}>Reload</Text>
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center'},
+  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
   card: {
     width: '90%',
     marginLeft: 'auto',
