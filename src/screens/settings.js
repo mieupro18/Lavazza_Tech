@@ -74,10 +74,12 @@ class SettingConfig extends Component {
       })
       .catch(e => {
         console.log(e);
-        Alert.alert(
-          '',
-          'Check your Wifi connection with the lavazza caffè machine',
-          [{text: 'Ok'}],
+        ToastAndroid.showWithGravityAndOffset(
+          'Failed: Check your Wifi connection with the lavazza caffè machine ',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+          25,
+          50,
         );
         this.setState({isLoading: false});
       });
@@ -125,10 +127,12 @@ class SettingConfig extends Component {
       })
       .catch(e => {
         console.log(e);
-        Alert.alert(
-          '',
-          'Check your Wifi connection with the lavazza caffè machine',
-          [{text: 'Ok'}],
+        ToastAndroid.showWithGravityAndOffset(
+          'Failed: Check your Wifi connection with the lavazza caffè machine ',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+          25,
+          50,
         );
         this.setState({isLoading: false});
       });
@@ -198,8 +202,9 @@ class SettingConfig extends Component {
                   </View>
                   <View style={styles.fiftyPercentWidthContainer}>
                     <Text style={styles.valueTextStyle}>
-                      To clear all the device data,Press 'Clear Data' button
-                      below
+                      To clear all the device data such as device
+                      identity,product list,wifi ssid,etc.,Press 'Clear Data'
+                      button below
                     </Text>
                   </View>
                 </View>

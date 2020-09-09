@@ -29,44 +29,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {SERVER_URL, TOKEN} from '../utilities/macros';
+import {SERVER_URL, TOKEN, allProductList} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 
 class ConfigurationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      allProducts: [
-        'Cappuccino',
-        'Espresso',
-        'South Indian Coffee Light',
-        'South Indian Coffee Strong',
-        'Tea Water',
-        'Lemon Tea',
-        'Tea Milk',
-        'Hot Milk',
-        'Ristretto',
-        'Black Coffee',
-        'Caffe Latte',
-        'Macchiato',
-        'Green Tea',
-        'Badam Milk',
-        'Hot Water',
-        'Black Tea',
-        'Horlicks',
-        'Hot Chocolate',
-        'Filter Coffee',
-        'Boiled Tea',
-        'Soup',
-        'Tomato Soup',
-        'Vegetable Soup',
-        'Mug Smoodle',
-        'Cup Noodles',
-        'Corn Flakes',
-        'Sugarless Cereals',
-        'Steam',
-        'NONE',
-      ],
+      allProducts: allProductList,
       isEditProducts: false,
       selectedIndex: '',
       deviceProductInfo: '',
@@ -204,7 +174,7 @@ class ConfigurationScreen extends React.Component {
           })
           .catch(e => {
             ToastAndroid.showWithGravityAndOffset(
-              'Error:  ' + e,
+              'Failed: Check your Wifi connection with the lavazza caffè machine ',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
@@ -433,13 +403,11 @@ class ConfigurationScreen extends React.Component {
                         </Button>
                         <Button
                           rounded
-                          style={styles.submitButtonStyle}
+                          style={styles.saveButtonStyle}
                           onPress={() => {
                             this.editProducts();
                           }}>
-                          <Text style={styles.submitButtonTextStyle}>
-                            Submit
-                          </Text>
+                          <Text style={styles.saveButtonTextStyle}>Save</Text>
                         </Button>
                       </View>
                     )}
@@ -547,14 +515,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f2f6',
   },
   cancelButtonTextStyle: {color: '#000'},
-  submitButtonStyle: {
+  saveButtonStyle: {
     justifyContent: 'space-around',
     width: '40%',
     marginBottom: 30,
     marginTop: 20,
     backgroundColor: '#100A45',
   },
-  submitButtonTextStyle: {color: '#fff'},
+  saveButtonTextStyle: {color: '#fff'},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',

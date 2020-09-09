@@ -73,69 +73,88 @@ class WifiInfo extends Component {
       });
   };
 
-  submitWifiDetails = async () => {
+  saveWifiDetails = async () => {
+    let wsRegex = /^\s*|\s*$/g;
+    this.setState({ssid: await this.state.ssid.replace(wsRegex, '') });
+    console.log(this.state.ssid);
+    console.log(this.state.ssid.length);
     if (this.state.ssid !== null && this.state.ssid.length !== 0) {
-      this.setState({isLoading: true});
-      fetch(SERVER_URL + '/techapp/configureWifiInfo', {
-        method: 'POST',
-        headers: {
-          tokenId: 'secret',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: {
-            ssid: this.state.ssid,
+      if (this.state.ssid.match(/^(?=.*[A-Za-z])([ A-Za-z0-9_@/&-]+)*$/)) {
+        this.setState({isLoading: true});
+        fetch(SERVER_URL + '/techapp/configureWifiInfo', {
+          method: 'POST',
+          headers: {
+            tokenId: 'secret',
+            'Content-Type': 'application/json',
           },
-        }),
-        signal: (await getTimeoutSignal(5000)).signal,
-      })
-        .then(response => response.json())
-        .then(async resultData => {
-          if (resultData.status === 'Success') {
-            let newConfiguredData = {};
-            newConfiguredData.ssid = this.state.ssid;
+          body: JSON.stringify({
+            data: {
+              ssid: this.state.ssid,
+            },
+          }),
+          signal: (await getTimeoutSignal(5000)).signal,
+        })
+          .then(response => response.json())
+          .then(async resultData => {
+            if (resultData.status === 'Success') {
+              let newConfiguredData = {};
+              newConfiguredData.ssid = this.state.ssid;
 
-            this.setState({
-              wifiInfo: newConfiguredData,
-              ssid: newConfiguredData.ssid,
-              isEditWifiInfo: false,
-            });
+              this.setState({
+                wifiInfo: newConfiguredData,
+                ssid: newConfiguredData.ssid,
+                isEditWifiInfo: false,
+              });
 
-            ToastAndroid.showWithGravityAndOffset(
-              'Success:  ' + resultData.infoText,
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-              25,
-              50,
-            );
-          } else {
+              ToastAndroid.showWithGravityAndOffset(
+                'Success:  ' + resultData.infoText,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25,
+                50,
+              );
+            } else {
+              this.setState({
+                ssid: this.state.wifiInfo.ssid,
+                isEditWifiInfo: false,
+              });
+
+              ToastAndroid.showWithGravityAndOffset(
+                'Failed:  ' + resultData.infoText,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25,
+                50,
+              );
+            }
+            this.setState({isLoading: false});
+          })
+          .catch(e => {
             this.setState({
               ssid: this.state.wifiInfo.ssid,
+              isLoading: false,
               isEditWifiInfo: false,
             });
-
             ToastAndroid.showWithGravityAndOffset(
-              'Failed:  ' + resultData.infoText,
+              'Failed: Check your Wifi connection with the lavazza caffè machine ',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
               50,
             );
-          }
-          this.setState({isLoading: false});
-        })
-        .catch(e => {
-          this.setState({
-            ssid: this.state.wifiInfo.ssid,
-            isLoading: false,
-            isEditWifiInfo: false,
           });
-          Alert.alert(
-            '',
-            'Check your Wifi connection with the lavazza caffè machine',
-            [{text: 'Ok'}],
-          );
-        });
+      } else {
+        Alert.alert(
+          'Invalid Format',
+          'Valid Formats: \n1. Must have one alphapet\n2. Numbers are allowed\n3. Allowed special characters(@, /, _, -, &)',
+          [
+            {
+              text: 'Close',
+            },
+          ],
+          {cancelable: true},
+        );
+      }
     } else {
       Alert.alert(
         '',
@@ -218,7 +237,7 @@ class WifiInfo extends Component {
                         defaultValue={this.state.ssid}
                         style={styles.textInput}
                         selectionColor="#100A45"
-                        maxLength={50}
+                        maxLength={32}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />
@@ -237,11 +256,11 @@ class WifiInfo extends Component {
                       </Button>
                       <Button
                         rounded
-                        style={styles.submitButtonStyle}
+                        style={styles.saveButtonStyle}
                         onPress={() => {
-                          this.submitWifiDetails();
+                          this.saveWifiDetails();
                         }}>
-                        <Text style={styles.submitButtonTextStyle}>Submit</Text>
+                        <Text style={styles.saveButtonTextStyle}>Save</Text>
                       </Button>
                     </View>
                   </Form>
@@ -382,14 +401,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f2f6',
   },
   cancelButtonTextStyle: {color: '#000'},
-  submitButtonStyle: {
+  saveButtonStyle: {
     justifyContent: 'space-around',
     width: '40%',
     marginBottom: 30,
     marginTop: 20,
     backgroundColor: '#100A45',
   },
-  submitButtonTextStyle: {color: '#fff'},
+  saveButtonTextStyle: {color: '#fff'},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',

@@ -15,7 +15,6 @@ import {
   Alert,
   Image,
   ToastAndroid,
-  BackHandler,
   TouchableHighlight,
   StyleSheet,
   TextInput,
@@ -94,85 +93,108 @@ class DeviceInfo extends Component {
   };
 
   // Post Product Info
-  submitDeviceDetails = async () => {
+  saveDeviceDetails = async () => {
+    let wsRegex = /^\s*|\s*$/g;
+    this.setState({deviceId: await this.state.deviceId.replace(wsRegex, '')});
+    this.setState({
+      deviceName: await this.state.deviceName.replace(wsRegex, ''),
+    });
     if (
       this.state.deviceName !== null &&
       this.state.deviceName.length !== 0 &&
       (this.state.deviceId !== null && this.state.deviceId.length !== 0) &&
       (this.state.deviceType !== null && this.state.deviceType.length !== 0)
     ) {
-      this.setState({isLoading: true});
-      fetch(SERVER_URL + '/techapp/configureDeviceInfo', {
-        method: 'POST',
-        headers: {
-          tokenId: TOKEN,
-          'Content-Type': 'application/json',
-        },
-        signal: (await getTimeoutSignal(5000)).signal,
-        body: JSON.stringify({
-          data: {
-            deviceName: this.state.deviceName,
-            deviceId: this.state.deviceId,
-            deviceType: this.state.deviceType,
+      if (
+        this.state.deviceId.match(/^([ A-Za-z0-9_@/&-]+)*$/) &&
+        this.state.deviceName.match(/^([ A-Za-z0-9_@/&-]+)*$/)
+      ) {
+        this.setState({isLoading: true});
+        fetch(SERVER_URL + '/techapp/configureDeviceInfo', {
+          method: 'POST',
+          headers: {
+            tokenId: TOKEN,
+            'Content-Type': 'application/json',
           },
-        }),
-      })
-        .then(response => response.json())
-        .then(async resultData => {
-          if (resultData.status === 'Success') {
-            var newConfigureData = {};
+          signal: (await getTimeoutSignal(5000)).signal,
+          body: JSON.stringify({
+            data: {
+              deviceName: this.state.deviceName,
+              deviceId: this.state.deviceId,
+              deviceType: this.state.deviceType,
+            },
+          }),
+        })
+          .then(response => response.json())
+          .then(async resultData => {
+            if (resultData.status === 'Success') {
+              var newConfigureData = {};
 
-            newConfigureData.deviceName = this.state.deviceName;
-            newConfigureData.deviceId = this.state.deviceId;
-            newConfigureData.deviceType = this.state.deviceType;
-            newConfigureData.allDeviceTypes = this.state.deviceData.allDeviceTypes;
+              newConfigureData.deviceName = this.state.deviceName;
+              newConfigureData.deviceId = this.state.deviceId;
+              newConfigureData.deviceType = this.state.deviceType;
+              newConfigureData.allDeviceTypes = this.state.deviceData.allDeviceTypes;
 
-            this.setState({
-              deviceData: newConfigureData,
-              deviceName: newConfigureData.deviceName,
-              deviceId: newConfigureData.deviceId,
-              deviceType: newConfigureData.deviceType,
-              isEditDeviceInfo: false,
-            });
-            ToastAndroid.showWithGravityAndOffset(
-              'Success:  ' + resultData.infoText,
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-              25,
-              50,
-            );
-          } else {
+              this.setState({
+                deviceData: newConfigureData,
+                deviceName: newConfigureData.deviceName,
+                deviceId: newConfigureData.deviceId,
+                deviceType: newConfigureData.deviceType,
+                isEditDeviceInfo: false,
+              });
+              ToastAndroid.showWithGravityAndOffset(
+                'Success:  ' + resultData.infoText,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25,
+                50,
+              );
+            } else {
+              this.setState({
+                deviceName: this.state.deviceData.deviceName,
+                deviceId: this.state.deviceData.deviceId,
+                deviceType: this.state.deviceData.deviceType,
+                isEditDeviceInfo: false,
+              });
+
+              ToastAndroid.showWithGravityAndOffset(
+                'Failed:  ' + resultData.infoText,
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+                25,
+                50,
+              );
+            }
+            this.setState({isLoading: false});
+          })
+          .catch(async e => {
             this.setState({
               deviceName: this.state.deviceData.deviceName,
               deviceId: this.state.deviceData.deviceId,
               deviceType: this.state.deviceData.deviceType,
               isEditDeviceInfo: false,
             });
-
+            this.setState({isLoading: false});
             ToastAndroid.showWithGravityAndOffset(
-              'Failed:  ' + resultData.infoText,
+              'Failed: Check your Wifi connection with the lavazza caffè machine ',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
               50,
             );
-          }
-          this.setState({isLoading: false});
-        })
-        .catch(async e => {
-          this.setState({
-            deviceName: this.state.deviceData.deviceName,
-            deviceId: this.state.deviceData.deviceId,
-            deviceType: this.state.deviceData.deviceType,
-            isEditDeviceInfo: false,
           });
-          this.setState({isLoading: false});
-          Alert.alert(
-            '',
-            'Check your Wifi connection with the lavazza caffè machine',
-            [{text: 'Ok'}],
-          );
-        });
+      } else {
+        Alert.alert(
+          'Invalid Format',
+          'Valid Formats: \n1. Alphabets are allowed\n2. Numbers are allowed\n3. Allowed special characters(@, /, _, -, &)',
+          [
+            {
+              text: 'Close',
+            },
+          ],
+          {cancelable: true},
+        );
+      }
     } else {
       Alert.alert(
         '',
@@ -277,7 +299,10 @@ class DeviceInfo extends Component {
                         defaultValue={this.state.deviceData.deviceId}
                         style={styles.textInput}
                         selectionColor="#100A45"
-                        maxLength={100}
+                        maxLength={50}
+                        onSubmitEditing={() => {
+                          this.deviceName.focus();
+                        }}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceId =>
                           (this.state.deviceId = deviceId)
@@ -292,7 +317,10 @@ class DeviceInfo extends Component {
                         defaultValue={this.state.deviceData.deviceName}
                         style={styles.textInput}
                         selectionColor="#100A45"
-                        maxLength={100}
+                        ref={input => {
+                          this.deviceName = input;
+                        }}
+                        maxLength={50}
                         fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceName =>
                           (this.state.deviceName = deviceName)
@@ -348,11 +376,11 @@ class DeviceInfo extends Component {
                       </Button>
                       <Button
                         rounded
-                        style={styles.submitButtonStyle}
+                        style={styles.saveButtonStyle}
                         onPress={() => {
-                          this.submitDeviceDetails();
+                          this.saveDeviceDetails();
                         }}>
-                        <Text style={styles.submitButtonTextStyle}>Submit</Text>
+                        <Text style={styles.saveButtonTextStyle}>Save</Text>
                       </Button>
                     </View>
                   </Form>
@@ -487,14 +515,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f2f6',
   },
   cancelButtonTextStyle: {color: '#000'},
-  submitButtonStyle: {
+  saveButtonStyle: {
     justifyContent: 'space-around',
     width: '40%',
     marginBottom: 30,
     marginTop: 20,
     backgroundColor: '#100A45',
   },
-  submitButtonTextStyle: {color: '#fff'},
+  saveButtonTextStyle: {color: '#fff'},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',

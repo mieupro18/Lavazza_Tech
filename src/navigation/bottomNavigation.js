@@ -12,66 +12,65 @@ import DeviceConfig from '../screens/deviceConfiguration';
 import WifiConfig from '../screens/wifiConfiguration';
 import SettingConfig from '../screens/settings';
 
+DeviceConfig.navigationOptions = {
+  tabBarLabel: 'Device Identity',
+  tabBarIcon: ({tintColor}) => (
+    <View>
+      <FontAwesome5 style={[{color: tintColor}]} size={22} name={'list'} />
+    </View>
+  ),
+  activeColor: '#fff',
+  inactiveColor: '#ccc',
+};
+
+ProductConfig.navigationOptions = {
+  tabBarLabel: 'Product Info',
+  tabBarIcon: ({tintColor}) => (
+    <View>
+      <FontAwesome5 style={[{color: tintColor}]} size={22} name={'mug-hot'} />
+    </View>
+  ),
+  activeColor: '#fff',
+  inactiveColor: '#ccc',
+};
+
+WifiConfig.navigationOptions = {
+  tabBarLabel: 'Wifi Info',
+  tabBarIcon: ({tintColor}) => (
+    <View>
+      <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />
+    </View>
+  ),
+  activeColor: '#fff',
+  inactiveColor: '#ccc',
+};
+
+SettingConfig.navigationOptions = {
+  tabBarLabel: 'Settings',
+  tabBarIcon: ({tintColor}) => (
+    <View>
+      <FontAwesome5 style={[{color: tintColor}]} size={22} name={'cog'} />
+    </View>
+  ),
+  activeColor: '#fff',
+  inactiveColor: '#ccc',
+};
+
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     DeviceIdentity: {
       screen: DeviceConfig,
-      navigationOptions: {
-        tabBarLabel: 'Device Identity',
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            style={styles.imageStyle}
-            source={require('../../assets/coffee_machine_icon.png')}
-          />
-        ),
-        activeColor: '#fff',
-        inactiveColor: '#fff',
-      },
     },
 
     ProductInfo: {
       screen: ProductConfig,
-      navigationOptions: {
-        tabBarLabel: 'Product Info',
-        tabBarIcon: ({tintColor}) => (
-          <View>
-            <FontAwesome5
-              style={[{color: tintColor}]}
-              size={22}
-              name={'mug-hot'}
-            />
-          </View>
-        ),
-        activeColor: '#fff',
-        inactiveColor: '#fff',
-      },
     },
 
     WiFiInfo: {
       screen: WifiConfig,
-      navigationOptions: {
-        tabBarLabel: 'Wifi Info',
-        tabBarIcon: ({tintColor}) => (
-          <View>
-            <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />
-          </View>
-        ),
-        activeColor: '#fff',
-        inactiveColor: '#fff',
-      },
     },
     Settings: {
       screen: SettingConfig,
-      navigationOptions: {
-        tabBarLabel: 'Settings',
-        tabBarIcon: ({tintColor}) => (
-          <View>
-            <FontAwesome5 style={[{color: tintColor}]} size={22} name={'cog'} />
-          </View>
-        ),
-        activeColor: '#fff',
-        inactiveColor: '#fff',
-      },
     },
   },
   {
@@ -82,7 +81,3 @@ const TabNavigator = createMaterialBottomTabNavigator(
 );
 
 export default createAppContainer(TabNavigator);
-
-const styles = StyleSheet.create({
-  imageStyle: {width: '100%', height: '100%', resizeMode: 'contain'},
-});

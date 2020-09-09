@@ -1,4 +1,0 @@
-#Tue Sep 08 17:45:13 IST 2020
-base.0=C\:\\Users\\HAI\\Documents\\GitHub\\Lavazza_Tech\\android\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\out\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex
