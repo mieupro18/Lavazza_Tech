@@ -10,6 +10,7 @@ import {
   Button,
   Picker,
   Spinner,
+  Icon,
 } from 'native-base';
 import {Col, Row, Grid} from 'react-native-easy-grid';
 import {
@@ -29,18 +30,18 @@ import {
   RefreshControl,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {SERVER_URL, TOKEN, allProductList} from '../utilities/macros';
+import {SERVER_URL, TOKEN, SUCCESS} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 
 class ConfigurationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      allProducts: allProductList,
+      allProducts: null,
       isEditProducts: false,
-      selectedIndex: '',
-      deviceProductInfo: '',
-      isProductDataFetching: false,
+      selectedIndex: null,
+      deviceProductInfo: null,
+      isLoading: false,
     };
   }
 
@@ -49,16 +50,21 @@ class ConfigurationScreen extends React.Component {
   }
 
   setStateToInitialState = async () => {
+    for (var key in this.state.deviceProductInfo) {
+      await this.setState({[key]: null});
+    }
     this.setState({
-      selectedIndex: '',
-      deviceProductInfo: '',
-      isProductDataFetching: false,
+      selectedIndex: null,
+      deviceProductInfo: null,
+      isLoading: false,
+      allProducts: null,
+      numberOfProducts: null,
     });
   };
 
   // Fetch All products Information
   fetchProductData = async () => {
-    this.setState({isProductDataFetching: true, deviceProductInfo: ''});
+    this.setState({isLoading: true});
     fetch(SERVER_URL + '/techapp/productInfo', {
       headers: {
         tokenId: TOKEN,
@@ -68,19 +74,26 @@ class ConfigurationScreen extends React.Component {
       .then(response => response.json())
       .then(async resultData => {
         console.log(this.props.navigation.isFocused());
-        if (resultData.status === 'Success') {
+        if (resultData.status === SUCCESS) {
           console.log('resultData', resultData);
-          this.setState({deviceProductInfo: resultData.data});
+          this.setState({
+            deviceProductInfo: resultData.data,
+            allProducts: resultData.allProducts,
+          });
+          this.setState({
+            numberOfProducts: (await Object.keys(this.state.deviceProductInfo))
+              .length,
+          });
           console.log(this.state.deviceProductInfo);
           for (var key in this.state.deviceProductInfo) {
-            this.state[key] = this.state.deviceProductInfo[key];
+            await this.setState({[key]: this.state.deviceProductInfo[key]});
           }
           console.log('state', this.state);
         }
-        this.setState({isProductDataFetching: false});
+        this.setState({isLoading: false});
       })
       .catch(async e => {
-        this.setState({isProductDataFetching: false});
+        this.setState({isLoading: false});
       });
   };
 
@@ -91,6 +104,7 @@ class ConfigurationScreen extends React.Component {
     Object.keys(this.state.deviceProductInfo).map(productKey => {
       if (
         this.state[productKey] === '' ||
+        this.state[productKey] === null ||
         this.state[productKey] === undefined
       ) {
         isInvalidConfiguration = true;
@@ -98,90 +112,72 @@ class ConfigurationScreen extends React.Component {
     });
 
     if (!isInvalidConfiguration) {
-      let configuredProductValues = [];
-      Object.keys(this.state.deviceProductInfo).map(productKey => {
-        configuredProductValues.push(this.state[productKey]);
+      var configuredProductData = {};
+      Object.keys(this.state.deviceProductInfo).map((productKey, index) => {
+        configuredProductData[productKey] = this.state[productKey];
       });
-      var uniqueProducts = [...new Set(configuredProductValues)];
+      this.setState({isLoading: true});
+      // POST New Product Configure Data
+      fetch(SERVER_URL + '/techapp/configureProductInfo', {
+        method: 'POST',
+        headers: {
+          tokenId: TOKEN,
+          'Content-Type': 'application/json',
+        },
+        signal: (await getTimeoutSignal(5000)).signal,
+        body: JSON.stringify({
+          data: configuredProductData,
+        }),
+      })
+        .then(response => response.json())
+        .then(async resultData => {
+          if (resultData.status === SUCCESS) {
+            this.setState({
+              deviceProductInfo: configuredProductData,
+              isEditProducts: false,
+            });
 
-      if (uniqueProducts.length !== 8) {
-        Alert.alert(
-          'Duplicate Configuration',
-          'Please remove duplicate configuration',
-          [
-            {
-              text: 'Close',
-            },
-          ],
-          {cancelable: true},
-        );
-      } else {
-        var configuredProductData = {};
-        Object.keys(this.state.deviceProductInfo).map((productKey, index) => {
-          configuredProductData[
-            'Product' + Number(index + 1).toString()
-          ] = this.state[productKey];
-        });
-
-        // POST New Product Configure Data
-        fetch(SERVER_URL + '/techapp/configureProductInfo', {
-          method: 'POST',
-          headers: {
-            tokenId: TOKEN,
-            'Content-Type': 'application/json',
-          },
-          signal: (await getTimeoutSignal(5000)).signal,
-          body: JSON.stringify({
-            data: configuredProductData,
-          }),
-        })
-          .then(response => response.json())
-          .then(async resultData => {
-            if (resultData.status === 'Success') {
-              this.setState({
-                deviceProductInfo: configuredProductData,
-                isEditProducts: false,
-              });
-
-              Object.keys(this.state.deviceProductInfo).map(
-                async productKey => {
-                  this.setState({[productKey]: ''});
-                },
-              );
-
-              ToastAndroid.showWithGravityAndOffset(
-                'Success:  ' + resultData.infoText,
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-                25,
-                50,
-              );
-            } else {
-              Object.keys(this.state.deviceProductInfo).map(
-                async productKey => {
-                  this.setState({[productKey]: ''});
-                },
-              );
-
-              ToastAndroid.showWithGravityAndOffset(
-                'Failed:  ' + resultData.infoText,
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-                25,
-                50,
-              );
-            }
-          })
-          .catch(e => {
             ToastAndroid.showWithGravityAndOffset(
-              'Failed: Check your Wifi connection with the lavazza caffè machine ',
+              'Success:  ' + resultData.infoText,
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
               50,
             );
+          } else {
+            Object.keys(this.state.deviceProductInfo).map(async productKey => {
+              this.setState({
+                [productKey]: this.state.deviceProductInfo[productKey],
+                isEditProducts: false,
+              });
+            });
+
+            ToastAndroid.showWithGravityAndOffset(
+              'Failed:  ' + resultData.infoText,
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+              25,
+              50,
+            );
+          }
+          this.setState({isLoading: false});
+        })
+        .catch(e => {
+          Object.keys(this.state.deviceProductInfo).map(async productKey => {
+            this.setState({
+              [productKey]: this.state.deviceProductInfo[productKey],
+              isEditProducts: false,
+            });
           });
-      }
+          this.setState({isLoading: false, isEditProducts: false});
+          ToastAndroid.showWithGravityAndOffset(
+            'Failed: Check your Wifi connection with the lavazza caffè machine ',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+            25,
+            50,
+          );
+        });
     } else {
       Alert.alert(
         'Invalid Configuration',
@@ -218,14 +214,14 @@ class ConfigurationScreen extends React.Component {
               }}
             />
           }>
-          {this.state.isProductDataFetching === true ? (
+          {this.state.isLoading === true ? (
             <View style={styles.spinnerContainer}>
               <Spinner color="#100A45" size={30} />
               <Text style={styles.spinnerTextStyle}>
                 Loading...{'\n'}Please Wait!
               </Text>
             </View>
-          ) : this.state.deviceProductInfo !== '' ? (
+          ) : this.state.deviceProductInfo !== null ? (
             <View style={{}}>
               <Card style={styles.card}>
                 <CardItem header style={styles.cardHeader}>
@@ -237,40 +233,23 @@ class ConfigurationScreen extends React.Component {
                       (productKey, index) => {
                         console.log('init', productKey, index);
                         return (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              padding: 2,
-                              width: '95%',
-                              flex: 1,
-                              flexWrap: 'wrap',
-                              flexGrow: 1,
-                            }}>
+                          <View style={styles.bodyViewContainer}>
                             {this.state.isEditProducts === true ? (
-                              <Form style={{width: '100%'}}>
-                                <Item
-                                  picker
-                                  style={{
-                                    width: '100%',
-                                    marginLeft: 15,
-                                    marginTop: '2%',
-                                  }}>
-                                  <Label
-                                    style={{
-                                      color: '#100A45',
-                                      fontWeight: 'bold',
-                                      fontSize: 15,
-                                    }}>
+                              <Form style={styles.formStyle}>
+                                <Item picker style={styles.formItemStyle}>
+                                  <Label style={styles.formLableStyle}>
                                     {productKey}
                                   </Label>
 
                                   <Picker
+                                    mode="dropdown"
                                     placeholder="Select Product"
-                                    placeholderStyle={{color: '#bfc6ea'}}
                                     placeholderIconColor="#007aff"
                                     selectedValue={this.state[productKey]}
                                     onValueChange={async value => {
-                                      this.setState({
+                                      console.log('value', value);
+                                      console.log(productKey);
+                                      await this.setState({
                                         [productKey]: value,
                                       });
                                       console.log(this.state);
@@ -278,18 +257,35 @@ class ConfigurationScreen extends React.Component {
 
                                       Object.keys(
                                         this.state.deviceProductInfo,
-                                      ).map((productKey, index) => {
-                                        console.log(this.state[productKey]);
-                                        if (
-                                          this.state[productKey] !==
-                                            undefined &&
-                                          this.state[productKey] !== ''
-                                        ) {
-                                          selectedProducts.push(
-                                            this.state[productKey],
+                                      ).map(
+                                        (
+                                          productKeyLocalScope,
+                                          productKeyindex,
+                                        ) => {
+                                          console.log(
+                                            this.state[productKeyLocalScope],
+                                            productKeyindex,
                                           );
-                                        }
-                                      });
+                                          if (
+                                            this.state[productKeyLocalScope] !==
+                                              undefined &&
+                                            this.state[productKeyLocalScope] !==
+                                              null &&
+                                            this.state[productKeyLocalScope] !==
+                                              '' &&
+                                            this.state[productKeyLocalScope] !==
+                                              'NONE'
+                                          ) {
+                                            selectedProducts.push(
+                                              this.state[productKeyLocalScope],
+                                            );
+                                          }
+                                        },
+                                      );
+                                      console.log(
+                                        'selected products',
+                                        selectedProducts,
+                                      );
 
                                       let uniqueProducts = [
                                         ...new Set(selectedProducts),
@@ -299,26 +295,21 @@ class ConfigurationScreen extends React.Component {
                                         uniqueProducts.length <
                                         selectedProducts.length
                                       ) {
-                                        if (this.state[productKey] !== 'NONE') {
-                                          console.log(
-                                            'select',
-                                            selectedProducts,
-                                          );
-                                          this.setState({
-                                            [productKey]: this.state
-                                              .deviceProductInfo[productKey],
-                                          });
-                                          Alert.alert(
-                                            'Invalid Configuration',
-                                            'Already configured',
-                                            [
-                                              {
-                                                text: 'Close',
-                                              },
-                                            ],
-                                            {cancelable: true},
-                                          );
-                                        }
+                                        console.log('select', selectedProducts);
+                                        this.setState({
+                                          [productKey]: this.state
+                                            .deviceProductInfo[productKey],
+                                        });
+                                        Alert.alert(
+                                          'Invalid Configuration',
+                                          'Already configured',
+                                          [
+                                            {
+                                              text: 'Close',
+                                            },
+                                          ],
+                                          {cancelable: true},
+                                        );
                                       }
                                     }}>
                                     <Picker.Item
@@ -327,9 +318,10 @@ class ConfigurationScreen extends React.Component {
                                     />
 
                                     {this.state.allProducts.map(
-                                      (product, index) => {
+                                      (product, dropDownValueIndex) => {
                                         return (
                                           <Picker.Item
+                                            key={dropDownValueIndex}
                                             label={product}
                                             value={product}
                                           />
@@ -342,23 +334,18 @@ class ConfigurationScreen extends React.Component {
                             ) : (
                               [
                                 <Grid>
-                                  <Row style={{padding: 5, marginTop: '2%'}}>
+                                  <Row style={styles.rowStyle}>
                                     <Col>
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: 'bold',
-                                          color: '#100A45',
-                                        }}>
+                                      <Text style={styles.columnKeyStyle}>
                                         {productKey}
                                       </Text>
                                     </Col>
                                     <Col>
-                                      <Text style={{fontSize: 15}}>
+                                      <Text style={styles.columnValueStyle}>
                                         {this.state.deviceProductInfo[
                                           productKey
                                         ] === null
-                                          ? 'Not Set'
+                                          ? '---Not Set---'
                                           : this.state.deviceProductInfo[
                                               productKey
                                             ]}
@@ -374,20 +361,26 @@ class ConfigurationScreen extends React.Component {
                     )}
 
                     {this.state.isEditProducts === false ? (
-                      <View style={styles.editButtonContainer}>
-                        <Button
-                          rounded
-                          style={styles.editButtonStyle}
-                          onPress={async () => {
-                            this.setState({isEditProducts: true});
-                          }}>
-                          <Text style={styles.editButtonTextStyle}>Edit</Text>
-                        </Button>
-                      </View>
+                      <Button
+                        rounded
+                        iconLeft
+                        style={styles.buttonStyle}
+                        onPress={async () => {
+                          this.setState({isEditProducts: true});
+                        }}>
+                        <Icon
+                          name="create-outline"
+                          style={styles.buttonIconStyle}
+                        />
+                        <Text uppercase={false} style={styles.buttonTextStyle}>
+                          Edit
+                        </Text>
+                      </Button>
                     ) : (
                       <View style={styles.buttonContainer}>
                         <Button
                           rounded
+                          iconLeft
                           style={styles.cancelButtonStyle}
                           onPress={async () => {
                             this.setState({isEditProducts: false});
@@ -397,17 +390,32 @@ class ConfigurationScreen extends React.Component {
                               });
                             }
                           }}>
-                          <Text style={styles.cancelButtonTextStyle}>
+                          <Icon
+                            name="close-circle"
+                            style={styles.cancelButtonIconStyle}
+                          />
+                          <Text
+                            uppercase={false}
+                            style={styles.cancelButtonTextStyle}>
                             Cancel
                           </Text>
                         </Button>
                         <Button
                           rounded
-                          style={styles.saveButtonStyle}
+                          iconLeft
+                          style={styles.buttonStyle}
                           onPress={() => {
                             this.editProducts();
                           }}>
-                          <Text style={styles.saveButtonTextStyle}>Save</Text>
+                          <Icon
+                            name="checkmark-circle"
+                            style={styles.buttonIconStyle}
+                          />
+                          <Text
+                            uppercase={false}
+                            style={styles.buttonTextStyle}>
+                            Save
+                          </Text>
                         </Button>
                       </View>
                     )}
@@ -420,11 +428,6 @@ class ConfigurationScreen extends React.Component {
               <Entypo
                 name="warning"
                 style={styles.warningImageStyle}
-                onPress={() => {
-                  this.setState({
-                    modalVisible: !this.state.modalVisible,
-                  });
-                }}
                 size={responsiveScreenHeight(10)}
               />
 
@@ -473,7 +476,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
+  spinnerTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   card: {
     width: '90%',
     marginLeft: 'auto',
@@ -485,51 +491,74 @@ const styles = StyleSheet.create({
     height: responsiveScreenHeight(3),
     width: '50%',
     alignSelf: 'center',
-    //flexDirection:'row',
     borderRadius: 10,
   },
-  cardHeaderTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#fff'},
+  cardHeaderTextStyle: {
+    fontSize: responsiveScreenFontSize(2),
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  rowStyle: {padding: responsiveScreenHeight(1), marginTop: '2%'},
+  columnKeyStyle: {
+    fontSize: responsiveScreenFontSize(1.8),
+    fontWeight: 'bold',
+    color: '#100A45',
+  },
+  columnValueStyle: {fontSize: responsiveScreenFontSize(1.8)},
+  bodyViewContainer: {
+    flexDirection: 'row',
+    padding: 2,
+    width: '95%',
+    flex: 1,
+    flexWrap: 'wrap',
+    flexGrow: 1,
+  },
+  formStyle: {width: '100%'},
+  formItemStyle: {
+    width: '100%',
+    marginLeft: responsiveScreenWidth(1.5),
+    marginTop: '2%',
+  },
+  formLableStyle: {
+    color: '#100A45',
+    fontWeight: 'bold',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-around',
   },
-  editButtonContainer: {
-    width: '100%',
-  },
-  editButtonStyle: {
+  buttonStyle: {
     justifyContent: 'center',
-    marginTop: 25,
-    width: '30%',
-    marginLeft: 'auto',
+    width: '40%',
+    marginTop: '5%',
     marginRight: 'auto',
-    marginBottom: 5,
+    marginLeft: 'auto',
     backgroundColor: '#100A45',
   },
-  editButtonTextStyle: {fontSize: 14, color: '#fff'},
+  buttonIconStyle: {marginLeft: 'auto'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cancelButtonStyle: {
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
+    marginTop: '5%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000'},
-  saveButtonStyle: {
-    justifyContent: 'space-around',
-    width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
-    backgroundColor: '#100A45',
-  },
-  saveButtonTextStyle: {color: '#fff'},
+  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
     alignItems: 'center',
   },
   warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
-  errorTextStyle: {textAlign: 'center'},
+  errorTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
     height: responsiveScreenHeight(5),
@@ -541,6 +570,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(2),
   },
 });

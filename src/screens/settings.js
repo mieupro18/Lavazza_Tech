@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Card, CardItem, Button, Spinner} from 'native-base';
 import {
   View,
   Text,
@@ -11,13 +10,20 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
+import {Card, CardItem, Button, Spinner, Icon} from 'native-base';
 import {
   responsiveScreenHeight,
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
 
-import {SERVER_URL, TOKEN} from '../utilities/macros';
+import {
+  SERVER_URL,
+  TOKEN,
+  SUCCESS,
+  FAILURE,
+  CONFIG_ERROR,
+} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 
 class SettingConfig extends Component {
@@ -42,17 +48,17 @@ class SettingConfig extends Component {
     })
       .then(response => response.json())
       .then(async resultData => {
-        if (resultData.status === 'Success') {
+        if (resultData.status === SUCCESS) {
           ToastAndroid.showWithGravityAndOffset(
-            'Reboot Initiated',
+            'Success: Reboot Initiated',
             ToastAndroid.LONG,
             ToastAndroid.CENTER,
             25,
             50,
           );
           BackHandler.exitApp();
-        } else if (resultData.status === 'Failure') {
-          if (resultData.infoText === 'config error') {
+        } else if (resultData.status === FAILURE) {
+          if (resultData.infoText === CONFIG_ERROR) {
             ToastAndroid.showWithGravityAndOffset(
               'Reboot Failed. Please provision all the device configurations ',
               ToastAndroid.LONG,
@@ -95,17 +101,17 @@ class SettingConfig extends Component {
     })
       .then(response => response.json())
       .then(async resultData => {
-        if (resultData.status === 'Success') {
+        if (resultData.status === SUCCESS) {
           ToastAndroid.showWithGravityAndOffset(
-            'Success: Reboot Initiated',
+            'Success: Clear Data Initiated',
             ToastAndroid.LONG,
             ToastAndroid.CENTER,
             25,
             50,
           );
           BackHandler.exitApp();
-        } else if (resultData.status === 'Failure') {
-          if (resultData.infoText === 'config error') {
+        } else if (resultData.status === FAILURE) {
+          if (resultData.infoText === CONFIG_ERROR) {
             ToastAndroid.showWithGravityAndOffset(
               'Failed : Clear data functionality works only after provisioning the device',
               ToastAndroid.LONG,
@@ -162,72 +168,73 @@ class SettingConfig extends Component {
               </CardItem>
               <CardItem style={styles.flexColumnContainer}>
                 <View style={styles.flexRowContainer}>
-                  <View style={styles.fiftyPercentWidthContainer}>
+                  <View style={styles.keyTextContainer}>
                     <Text style={styles.keyTextStyle}>
-                      Device Reboot{'\n'}Instruction
+                      Reboot{'\n'}Instruction
                     </Text>
                   </View>
-                  <View style={styles.fiftyPercentWidthContainer}>
+                  <View style={styles.valueTextContainer}>
                     <Text style={styles.valueTextStyle}>
-                      To restart the device,Press 'Reboot' button below
+                      To restart the device,{'\n'}Press 'Reboot' button
                     </Text>
                   </View>
                 </View>
               </CardItem>
               <CardItem>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    onPress={() => {
-                      Alert.alert('', 'Do you want to reboot the device?', [
-                        {
-                          text: 'Yes',
-                          onPress: async () => {
-                            await this.reboot();
-                          },
+                <Button
+                  rounded
+                  iconLeft
+                  onPress={() => {
+                    Alert.alert('', 'Do you want to reboot the device?', [
+                      {
+                        text: 'Yes',
+                        onPress: async () => {
+                          await this.reboot();
                         },
-                        {text: 'No'},
-                      ]);
-                    }}
-                    style={styles.rebootButtonStyle}>
-                    <Text style={styles.rebootButtonTextStyle}>Reboot</Text>
-                  </Button>
-                </View>
+                      },
+                      {text: 'No'},
+                    ]);
+                  }}
+                  style={styles.buttonStyle}>
+                  <Icon name="reload-circle" style={styles.buttonIconStyle} />
+                  <Text style={styles.buttonTextStyle}>Reboot</Text>
+                </Button>
               </CardItem>
               <CardItem style={styles.flexColumnContainer}>
                 <View style={styles.flexRowContainer}>
-                  <View style={styles.fiftyPercentWidthContainer}>
+                  <View style={styles.keyTextContainer}>
                     <Text style={styles.keyTextStyle}>
-                      Clear Device Data {'\n'}Instruction
+                      Clear Data {'\n'}Instruction
                     </Text>
                   </View>
-                  <View style={styles.fiftyPercentWidthContainer}>
+                  <View style={styles.valueTextContainer}>
                     <Text style={styles.valueTextStyle}>
                       To clear all the device data such as device
-                      identity,product list,wifi ssid,etc.,Press 'Clear Data'
-                      button below
+                      identity,product list and wifi ssid, Press 'Clear Data'
+                      button
                     </Text>
                   </View>
                 </View>
               </CardItem>
               <CardItem>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    rounded
-                    style={styles.resetButtonStyle}
-                    onPress={async () => {
-                      Alert.alert('', 'Do you want to clear device data?', [
-                        {
-                          text: 'Yes',
-                          onPress: async () => {
-                            await this.clearDeviceData();
-                          },
+                <Button
+                  iconLeft
+                  rounded
+                  style={styles.buttonStyle}
+                  onPress={async () => {
+                    Alert.alert('', 'Do you want to clear device data?', [
+                      {
+                        text: 'Yes',
+                        onPress: async () => {
+                          await this.clearDeviceData();
                         },
-                        {text: 'No'},
-                      ]);
-                    }}>
-                    <Text style={styles.resetButtonTextStyle}>Clear Data</Text>
-                  </Button>
-                </View>
+                      },
+                      {text: 'No'},
+                    ]);
+                  }}>
+                  <Icon name="trash" style={styles.buttonIconStyle} />
+                  <Text style={styles.buttonTextStyle}>Clear Data</Text>
+                </Button>
               </CardItem>
             </Card>
           )}
@@ -259,7 +266,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
+  spinnerTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   card: {
     width: '90%',
     marginLeft: 'auto',
@@ -271,43 +281,36 @@ const styles = StyleSheet.create({
     height: responsiveScreenHeight(3),
     width: '50%',
     alignSelf: 'center',
-    //flexDirection:'row',
     borderRadius: 10,
   },
-  cardHeaderTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#fff'},
-  cardItemHeadingTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#000'},
-  cardItemTextStyle: {
-    fontSize: 14,
-    marginLeft: '5%',
-    marginTop: '2%',
-    color: '#000',
+  cardHeaderTextStyle: {
+    fontSize: responsiveScreenFontSize(2),
+    fontWeight: 'bold',
+    color: '#fff',
   },
   flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
   flexColumnContainer: {flex: 1, flexDirection: 'column'},
-  fiftyPercentWidthContainer: {width: '50%'},
-  keyTextStyle: {fontSize: 14, color: '#100A45', fontWeight: 'bold'},
-  valueTextStyle: {fontSize: 14},
+  keyTextContainer: {width: '35%', padding: '3%'},
+  valueTextContainer: {width: '65%', padding: '3%'},
+  keyTextStyle: {
+    fontSize: responsiveScreenFontSize(1.8),
+    color: '#100A45',
+    fontWeight: 'bold',
+  },
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-around',
   },
-  rebootButtonStyle: {
+  buttonStyle: {
     justifyContent: 'center',
-    width: '40%',
-    marginTop: 25,
+    width: '50%',
+    marginTop: '5%',
     marginRight: 'auto',
     marginLeft: 'auto',
     backgroundColor: '#100A45',
-    borderRadius: 100,
   },
-  rebootButtonTextStyle: {fontSize: 14, marginLeft: 5, color: '#fff'},
-  resetButtonStyle: {
-    justifyContent: 'space-around',
-    width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
-    backgroundColor: '#100A45',
-  },
-  resetButtonTextStyle: {color: '#fff'},
+  buttonIconStyle: {marginLeft: 'auto'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
 });

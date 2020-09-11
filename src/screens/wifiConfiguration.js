@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import {
   View,
   Text,
@@ -12,16 +11,24 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
+import {
+  Card,
+  CardItem,
+  Button,
+  Form,
+  Label,
+  Icon,
+  Item,
+  Spinner,
+} from 'native-base';
 import Entypo from 'react-native-vector-icons/Entypo';
-
-import {Card, CardItem, Button, Form, Label, Item, Spinner} from 'native-base';
 import {
   responsiveScreenHeight,
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
 
-import {SERVER_URL, TOKEN} from '../utilities/macros';
+import {SERVER_URL, TOKEN, SUCCESS} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 import {SafeAreaView} from 'react-navigation';
 
@@ -60,7 +67,7 @@ class WifiInfo extends Component {
       .then(async resultData => {
         console.log(resultData);
         console.log(this.props.navigation.isFocused());
-        if (resultData.status === 'Success') {
+        if (resultData.status === SUCCESS) {
           this.setState({
             wifiInfo: resultData.data,
             ssid: resultData.data.ssid,
@@ -74,79 +81,92 @@ class WifiInfo extends Component {
   };
 
   saveWifiDetails = async () => {
-    let wsRegex = /^\s*|\s*$/g;
-    this.setState({ssid: await this.state.ssid.replace(wsRegex, '') });
-    console.log(this.state.ssid);
-    console.log(this.state.ssid.length);
-    if (this.state.ssid !== null && this.state.ssid.length !== 0) {
-      if (this.state.ssid.match(/^(?=.*[A-Za-z])([ A-Za-z0-9_@/&-]+)*$/)) {
-        this.setState({isLoading: true});
-        fetch(SERVER_URL + '/techapp/configureWifiInfo', {
-          method: 'POST',
-          headers: {
-            tokenId: 'secret',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            data: {
-              ssid: this.state.ssid,
+    if (this.state.ssid !== null) {
+      let wsRegex = /^\s*|\s*$/g;
+      this.setState({ssid: await this.state.ssid.replace(wsRegex, '')});
+      console.log(this.state.ssid);
+      console.log(this.state.ssid.length);
+      if (this.state.ssid.length >= 3) {
+        if (this.state.ssid.match(/^(?=.*[A-Za-z])([ A-Za-z0-9_]+)*$/)) {
+          this.setState({isLoading: true});
+          fetch(SERVER_URL + '/techapp/configureWifiInfo', {
+            method: 'POST',
+            headers: {
+              tokenId: 'secret',
+              'Content-Type': 'application/json',
             },
-          }),
-          signal: (await getTimeoutSignal(5000)).signal,
-        })
-          .then(response => response.json())
-          .then(async resultData => {
-            if (resultData.status === 'Success') {
-              let newConfiguredData = {};
-              newConfiguredData.ssid = this.state.ssid;
+            body: JSON.stringify({
+              data: {
+                ssid: this.state.ssid,
+              },
+            }),
+            signal: (await getTimeoutSignal(5000)).signal,
+          })
+            .then(response => response.json())
+            .then(async resultData => {
+              if (resultData.status === SUCCESS) {
+                let newConfiguredData = {};
+                newConfiguredData.ssid = this.state.ssid;
 
-              this.setState({
-                wifiInfo: newConfiguredData,
-                ssid: newConfiguredData.ssid,
-                isEditWifiInfo: false,
-              });
+                this.setState({
+                  wifiInfo: newConfiguredData,
+                  ssid: newConfiguredData.ssid,
+                  isEditWifiInfo: false,
+                });
 
-              ToastAndroid.showWithGravityAndOffset(
-                'Success:  ' + resultData.infoText,
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-                25,
-                50,
-              );
-            } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Success:  ' + resultData.infoText,
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                  25,
+                  50,
+                );
+              } else {
+                this.setState({
+                  ssid: this.state.wifiInfo.ssid,
+                  isEditWifiInfo: false,
+                });
+
+                ToastAndroid.showWithGravityAndOffset(
+                  'Failed:  ' + resultData.infoText,
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                  25,
+                  50,
+                );
+              }
+              this.setState({isLoading: false});
+            })
+            .catch(e => {
               this.setState({
                 ssid: this.state.wifiInfo.ssid,
+                isLoading: false,
                 isEditWifiInfo: false,
               });
-
               ToastAndroid.showWithGravityAndOffset(
-                'Failed:  ' + resultData.infoText,
+                'Failed: Check your Wifi connection with the lavazza caffè machine ',
                 ToastAndroid.LONG,
                 ToastAndroid.CENTER,
                 25,
                 50,
               );
-            }
-            this.setState({isLoading: false});
-          })
-          .catch(e => {
-            this.setState({
-              ssid: this.state.wifiInfo.ssid,
-              isLoading: false,
-              isEditWifiInfo: false,
             });
-            ToastAndroid.showWithGravityAndOffset(
-              'Failed: Check your Wifi connection with the lavazza caffè machine ',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-              25,
-              50,
-            );
-          });
+        } else {
+          Alert.alert(
+            'Invalid Format',
+            'Note: \n1. Minimum 3 characters length\n2. Must have one alphapet\n3. Numbers are allowed\n4. Allowed special character( _ )',
+            [
+              {
+                text: 'Close',
+              },
+            ],
+            {cancelable: true},
+          );
+        }
       } else {
         Alert.alert(
-          'Invalid Format',
-          'Valid Formats: \n1. Must have one alphapet\n2. Numbers are allowed\n3. Allowed special characters(@, /, _, -, &)',
+          'All Fields are required.',
+          'Note: \n1. Minimum 3 characters length\n2. Must have one alphapet\n3. Numbers are allowed\n4. Allowed special character( "_"underscore )',
           [
             {
               text: 'Close',
@@ -157,8 +177,8 @@ class WifiInfo extends Component {
       }
     } else {
       Alert.alert(
-        '',
         'All Fields are required.',
+        'Note: \n1. Minimum 3 characters length\n2. Must have one alphapet\n3. Numbers are allowed\n4. Allowed special character( "_"underscore )',
         [
           {
             text: 'Close',
@@ -179,6 +199,7 @@ class WifiInfo extends Component {
           />
         </View>
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
               refreshing={false}
@@ -205,13 +226,13 @@ class WifiInfo extends Component {
               {this.state.isEditWifiInfo === false ? (
                 <CardItem style={styles.flexColumnContainer}>
                   <View style={styles.flexRowContainer}>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.keyTextContainer}>
                       <Text style={styles.keyTextStyle}>Wifi SSID</Text>
                     </View>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.valueTextContainer}>
                       <Text style={styles.valueTextStyle}>
                         {this.state.wifiInfo.ssid === null
-                          ? 'Not Set'
+                          ? '---Not Set---'
                           : this.state.wifiInfo.ssid}
                       </Text>
                     </View>
@@ -219,11 +240,16 @@ class WifiInfo extends Component {
 
                   <Button
                     rounded
-                    style={styles.editButtonStyle}
+                    iconLeft
+                    style={styles.buttonStyle}
                     onPress={async () => {
                       this.setState({isEditWifiInfo: true});
                     }}>
-                    <Text style={styles.editButtonTextStyle}>Edit</Text>
+                    <Icon
+                      name="create-outline"
+                      style={styles.buttonIconStyle}
+                    />
+                    <Text style={styles.buttonTextStyle}>Edit</Text>
                   </Button>
                 </CardItem>
               ) : (
@@ -235,15 +261,16 @@ class WifiInfo extends Component {
                     <Item style={styles.formItemStyle}>
                       <TextInput
                         defaultValue={this.state.ssid}
+                        keyboardType="visible-password"
                         style={styles.textInput}
-                        selectionColor="#100A45"
                         maxLength={32}
-                        fontSize={responsiveScreenFontSize(1.5)}
+                        fontSize={responsiveScreenFontSize(1.8)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />
                     </Item>
                     <View style={styles.buttonContainer}>
                       <Button
+                        iconLeft
                         rounded
                         style={styles.cancelButtonStyle}
                         onPress={async () => {
@@ -252,15 +279,24 @@ class WifiInfo extends Component {
                             ssid: this.state.wifiInfo.ssid,
                           });
                         }}>
+                        <Icon
+                          name="close-circle"
+                          style={styles.cancelButtonIconStyle}
+                        />
                         <Text style={styles.cancelButtonTextStyle}>Cancel</Text>
                       </Button>
                       <Button
+                        iconLeft
                         rounded
-                        style={styles.saveButtonStyle}
+                        style={styles.buttonStyle}
                         onPress={() => {
                           this.saveWifiDetails();
                         }}>
-                        <Text style={styles.saveButtonTextStyle}>Save</Text>
+                        <Icon
+                          name="checkmark-circle"
+                          style={styles.buttonIconStyle}
+                        />
+                        <Text style={styles.buttonTextStyle}>Save</Text>
                       </Button>
                     </View>
                   </Form>
@@ -272,11 +308,6 @@ class WifiInfo extends Component {
               <Entypo
                 name="warning"
                 style={styles.warningImageStyle}
-                onPress={() => {
-                  this.setState({
-                    modalVisible: !this.state.modalVisible,
-                  });
-                }}
                 size={responsiveScreenHeight(10)}
               />
 
@@ -325,7 +356,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
+  spinnerTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   card: {
     width: '90%',
     marginLeft: 'auto',
@@ -339,31 +373,39 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 10,
   },
-  cardHeaderTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#fff'},
+  cardHeaderTextStyle: {
+    fontSize: responsiveScreenFontSize(2),
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   flexRowContainer: {
     flexDirection: 'row',
-    //justifyContent: 'space-between',
-    //width: '95%',
   },
   flexColumnContainer: {
     flexDirection: 'column',
     flex: 1,
     marginTop: '5%',
-    //alignItems: 'flex-start',
   },
   fiftyPercentWidthContainer: {width: '50%'},
-  keyTextStyle: {fontSize: 14, color: '#100A45', fontWeight: 'bold'},
-  valueTextStyle: {fontSize: 14},
-  editButtonStyle: {
+  keyTextContainer: {width: '50%', padding: '3%'},
+  valueTextContainer: {width: '50%', padding: '3%'},
+  keyTextStyle: {
+    fontSize: responsiveScreenFontSize(1.8),
+    color: '#100A45',
+    fontWeight: 'bold',
+  },
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
+  buttonStyle: {
     justifyContent: 'center',
-    marginTop: 25,
-    width: '30%',
-    marginLeft: 'auto',
+    width: '40%',
+    marginTop: '5%',
     marginRight: 'auto',
-    marginBottom: 5,
+    marginLeft: 'auto',
     backgroundColor: '#100A45',
   },
-  editButtonTextStyle: {fontSize: 14, color: '#fff'},
+  buttonIconStyle: {marginLeft: 'auto'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
   formItemTransparentStyle: {
@@ -374,7 +416,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: 14,
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
   },
   textInput: {
@@ -394,21 +436,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   cancelButtonStyle: {
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
+    marginTop: '5%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000'},
-  saveButtonStyle: {
-    justifyContent: 'space-around',
-    width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
-    backgroundColor: '#100A45',
-  },
-  saveButtonTextStyle: {color: '#fff'},
+  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -418,7 +453,10 @@ const styles = StyleSheet.create({
     color: '#CECDCB',
     marginTop: '10%',
   },
-  errorTextStyle: {textAlign: 'center'},
+  errorTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
     height: responsiveScreenHeight(5),
@@ -430,6 +468,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(2),
   },
 });

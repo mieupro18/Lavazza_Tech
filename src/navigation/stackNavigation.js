@@ -12,7 +12,6 @@ const AppNavigator = createStackNavigator(
   },
   {
     headerMode: 'none',
-    //initialRouteName: 'technicianWindow',
     initialRouteName: 'Login',
   },
 );

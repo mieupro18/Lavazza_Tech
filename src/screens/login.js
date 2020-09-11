@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import {
-  responsiveScreenHeight,
-  responsiveScreenWidth,
-  responsiveScreenFontSize,
-} from 'react-native-responsive-dimensions';
-import {
   Alert,
   Image,
   TextInput,
@@ -15,6 +10,11 @@ import {
   Text,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+  responsiveScreenFontSize,
+} from 'react-native-responsive-dimensions';
 
 const technicianLoginCredentials = [
   {
@@ -76,6 +76,7 @@ export default class Login extends Component {
             loginDetails.password === this.state.password,
         );
         if (typeof matchedLoginCredentials !== 'undefined') {
+          this.unsubscribe();
           this.props.navigation.replace('technicianWindow');
         } else {
           Alert.alert('', 'Invalid technician login\nPlease try again...!', [
@@ -115,19 +116,19 @@ export default class Login extends Component {
                 <Text style={styles.loginTextStyle}>Technician Login</Text>
                 <TextInput
                   style={styles.textInput}
-                  selectionColor="#100A45"
                   maxLength={15}
                   placeholder="Username"
+                  autoCorrect={false}
                   onSubmitEditing={() => {
                     this.password.focus();
                   }}
+                  keyboardType="visible-password"
                   blurOnSubmit={false}
                   fontSize={responsiveScreenFontSize(1.5)}
                   onChangeText={username => (this.state.userName = username)}
                 />
                 <TextInput
                   style={styles.textInput}
-                  selectionColor="#100A45"
                   secureTextEntry={true}
                   maxLength={15}
                   ref={input => {

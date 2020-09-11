@@ -1,15 +1,5 @@
 import React, {Component} from 'react';
 import {
-  Card,
-  CardItem,
-  Button,
-  Form,
-  Label,
-  Item,
-  Picker,
-  Spinner,
-} from 'native-base';
-import {
   View,
   Text,
   Alert,
@@ -23,20 +13,30 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {
+  Card,
+  CardItem,
+  Button,
+  Form,
+  Label,
+  Item,
+  Picker,
+  Spinner,
+  Icon,
+} from 'native-base';
+import {
   responsiveScreenHeight,
   responsiveScreenWidth,
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-import {SERVER_URL, TOKEN} from '../utilities/macros';
+import {SERVER_URL, TOKEN, SUCCESS} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 
 class DeviceInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showToast: false,
       isEditDeviceInfo: false,
       deviceType: null,
       deviceName: null,
@@ -53,7 +53,6 @@ class DeviceInfo extends Component {
 
   setStateToInitialState = async () => {
     this.setState({
-      showToast: false,
       isEditDeviceInfo: false,
       deviceType: null,
       deviceName: null,
@@ -76,7 +75,7 @@ class DeviceInfo extends Component {
       .then(async resultData => {
         console.log('fetch:', resultData);
         console.log(this.props.navigation.isFocused());
-        if (resultData.status === 'Success') {
+        if (resultData.status === SUCCESS) {
           this.setState({
             deviceData: resultData.data,
             deviceId: resultData.data.deviceId,
@@ -94,20 +93,21 @@ class DeviceInfo extends Component {
 
   // Post Product Info
   saveDeviceDetails = async () => {
-    let wsRegex = /^\s*|\s*$/g;
-    this.setState({deviceId: await this.state.deviceId.replace(wsRegex, '')});
-    this.setState({
-      deviceName: await this.state.deviceName.replace(wsRegex, ''),
-    });
     if (
       this.state.deviceName !== null &&
-      this.state.deviceName.length !== 0 &&
-      (this.state.deviceId !== null && this.state.deviceId.length !== 0) &&
-      (this.state.deviceType !== null && this.state.deviceType.length !== 0)
+      this.state.deviceId !== null &&
+      this.state.deviceType !== null
     ) {
+      let wsRegex = /^\s*|\s*$/g;
+      this.setState({deviceId: await this.state.deviceId.replace(wsRegex, '')});
+      this.setState({
+        deviceName: await this.state.deviceName.replace(wsRegex, ''),
+      });
+      console.log(this.state);
       if (
-        this.state.deviceId.match(/^([ A-Za-z0-9_@/&-]+)*$/) &&
-        this.state.deviceName.match(/^([ A-Za-z0-9_@/&-]+)*$/)
+        this.state.deviceName.length >= 3 &&
+        this.state.deviceId.length >= 3 &&
+        this.state.deviceType.length >= 3
       ) {
         this.setState({isLoading: true});
         fetch(SERVER_URL + '/techapp/configureDeviceInfo', {
@@ -127,7 +127,7 @@ class DeviceInfo extends Component {
         })
           .then(response => response.json())
           .then(async resultData => {
-            if (resultData.status === 'Success') {
+            if (resultData.status === SUCCESS) {
               var newConfigureData = {};
 
               newConfigureData.deviceName = this.state.deviceName;
@@ -185,8 +185,8 @@ class DeviceInfo extends Component {
           });
       } else {
         Alert.alert(
-          'Invalid Format',
-          'Valid Formats: \n1. Alphabets are allowed\n2. Numbers are allowed\n3. Allowed special characters(@, /, _, -, &)',
+          'All Fields are required',
+          'Note : Minimum 3 characters length',
           [
             {
               text: 'Close',
@@ -197,8 +197,8 @@ class DeviceInfo extends Component {
       }
     } else {
       Alert.alert(
-        '',
-        'All Fields are required.',
+        'All Fields are required',
+        'Note : Minimum 3 characters length',
         [
           {
             text: 'Close',
@@ -218,6 +218,7 @@ class DeviceInfo extends Component {
           />
         </View>
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           refreshControl={
             <RefreshControl
               refreshing={false}
@@ -244,48 +245,53 @@ class DeviceInfo extends Component {
               {this.state.isEditDeviceInfo === false ? (
                 <CardItem style={styles.flexColumnContainer}>
                   <View style={styles.flexRowContainer}>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.keyTextContainer}>
                       <Text style={styles.keyTextStyle}>Device Id</Text>
                     </View>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.valueTextContainer}>
                       <Text style={styles.valueTextStyle}>
                         {this.state.deviceData.deviceId === null
-                          ? 'Not Set'
+                          ? '---Not Set---'
                           : this.state.deviceData.deviceId}
                       </Text>
                     </View>
                   </View>
                   <View style={styles.flexRowContainer}>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.keyTextContainer}>
                       <Text style={styles.keyTextStyle}>Device Name</Text>
                     </View>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.valueTextContainer}>
                       <Text style={styles.valueTextStyle}>
                         {this.state.deviceData.deviceName === null
-                          ? 'Not Set'
+                          ? '---Not Set---'
                           : this.state.deviceData.deviceName}
                       </Text>
                     </View>
                   </View>
                   <View style={styles.flexRowContainer}>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.keyTextContainer}>
                       <Text style={styles.keyTextStyle}>Device Type</Text>
                     </View>
-                    <View style={styles.fiftyPercentWidthContainer}>
+                    <View style={styles.valueTextContainer}>
                       <Text style={styles.valueTextStyle}>
                         {this.state.deviceData.deviceType === null
-                          ? 'Not Set'
+                          ? '---Not Set---'
                           : this.state.deviceData.deviceType}
                       </Text>
                     </View>
                   </View>
                   <Button
                     rounded
-                    style={styles.editButtonStyle}
+                    iconLeft
+                    style={styles.buttonStyle}
                     onPress={async () => {
                       this.setState({isEditDeviceInfo: true});
                     }}>
-                    <Text style={styles.editButtonTextStyle}>Edit</Text>
+                    <Icon
+                      name="create-outline"
+                      style={styles.buttonIconStyle}
+                    />
+                    <Text style={styles.buttonTextStyle}>Edit</Text>
                   </Button>
                 </CardItem>
               ) : (
@@ -298,12 +304,12 @@ class DeviceInfo extends Component {
                       <TextInput
                         defaultValue={this.state.deviceData.deviceId}
                         style={styles.textInput}
-                        selectionColor="#100A45"
-                        maxLength={50}
+                        fontSize={responsiveScreenFontSize(1.8)}
+                        keyboardType="visible-password"
+                        maxLength={100}
                         onSubmitEditing={() => {
                           this.deviceName.focus();
                         }}
-                        fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceId =>
                           (this.state.deviceId = deviceId)
                         }
@@ -316,12 +322,12 @@ class DeviceInfo extends Component {
                       <TextInput
                         defaultValue={this.state.deviceData.deviceName}
                         style={styles.textInput}
-                        selectionColor="#100A45"
+                        keyboardType="visible-password"
                         ref={input => {
                           this.deviceName = input;
                         }}
-                        maxLength={50}
-                        fontSize={responsiveScreenFontSize(1.5)}
+                        maxLength={100}
+                        fontSize={responsiveScreenFontSize(1.8)}
                         onChangeText={deviceName =>
                           (this.state.deviceName = deviceName)
                         }
@@ -332,7 +338,6 @@ class DeviceInfo extends Component {
                     </Item>
                     <Item style={styles.pickerItemStyle}>
                       <Picker
-                        //note
                         mode="dialog"
                         style={styles.pickerStyle}
                         selectedValue={this.state.deviceType}
@@ -363,6 +368,7 @@ class DeviceInfo extends Component {
                     <View style={styles.buttonContainer}>
                       <Button
                         rounded
+                        iconLeft
                         style={styles.cancelButtonStyle}
                         onPress={async () => {
                           this.setState({
@@ -372,15 +378,24 @@ class DeviceInfo extends Component {
                             deviceName: this.state.deviceData.deviceName,
                           });
                         }}>
+                        <Icon
+                          name="close-circle"
+                          style={styles.cancelButtonIconStyle}
+                        />
                         <Text style={styles.cancelButtonTextStyle}>Cancel</Text>
                       </Button>
                       <Button
                         rounded
-                        style={styles.saveButtonStyle}
+                        iconLeft
+                        style={styles.buttonStyle}
                         onPress={() => {
                           this.saveDeviceDetails();
                         }}>
-                        <Text style={styles.saveButtonTextStyle}>Save</Text>
+                        <Icon
+                          name="checkmark-circle"
+                          style={styles.buttonIconStyle}
+                        />
+                        <Text style={styles.buttonTextStyle}>Save</Text>
                       </Button>
                     </View>
                   </Form>
@@ -392,11 +407,6 @@ class DeviceInfo extends Component {
               <Entypo
                 name="warning"
                 style={styles.warningImageStyle}
-                onPress={() => {
-                  this.setState({
-                    modalVisible: !this.state.modalVisible,
-                  });
-                }}
                 size={responsiveScreenHeight(10)}
               />
 
@@ -445,7 +455,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  spinnerTextStyle: {textAlign: 'center', fontSize: 13},
+  spinnerTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   card: {
     width: '90%',
     marginLeft: 'auto',
@@ -457,30 +470,48 @@ const styles = StyleSheet.create({
     height: responsiveScreenHeight(3),
     width: '50%',
     alignSelf: 'center',
-    //flexDirection:'row',
-    borderRadius: 10,
+    borderRadius: responsiveScreenWidth(2),
   },
-  cardHeaderTextStyle: {fontSize: 14, fontWeight: 'bold', color: '#fff'},
+  cardHeaderTextStyle: {
+    fontSize: responsiveScreenFontSize(2),
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
   flexColumnContainer: {flex: 1, flexDirection: 'column'},
-  fiftyPercentWidthContainer: {width: '50%'},
-  keyTextStyle: {fontSize: 14, color: '#100A45', fontWeight: 'bold'},
-  valueTextStyle: {fontSize: 14},
+  keyTextStyle: {
+    fontSize: responsiveScreenFontSize(1.8),
+    color: '#100A45',
+    fontWeight: 'bold',
+  },
+  keyTextContainer: {width: '50%', padding: '3%'},
+  valueTextContainer: {width: '50%', padding: '3%'},
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-around',
   },
-  editButtonStyle: {
+  buttonStyle: {
     justifyContent: 'center',
-    marginTop: 25,
-    width: '30%',
-    marginLeft: 'auto',
+    width: '40%',
+    marginTop: '5%',
     marginRight: 'auto',
-    marginBottom: 5,
+    marginLeft: 'auto',
     backgroundColor: '#100A45',
   },
-  editButtonTextStyle: {fontSize: 14, color: '#fff'},
+  buttonIconStyle: {marginLeft: 'auto'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  cancelButtonStyle: {
+    justifyContent: 'center',
+    width: '40%',
+    marginTop: '5%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    backgroundColor: '#f1f2f6',
+  },
+  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
+  cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
   formItemTransparentStyle: {
@@ -491,7 +522,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: 14,
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
   },
   textInput: {
@@ -507,29 +538,16 @@ const styles = StyleSheet.create({
   },
   pickerItemStyle: {width: '80%', alignSelf: 'center'},
   pickerStyle: {color: '#100A45'},
-  cancelButtonStyle: {
-    justifyContent: 'space-around',
-    width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
-    backgroundColor: '#f1f2f6',
-  },
-  cancelButtonTextStyle: {color: '#000'},
-  saveButtonStyle: {
-    justifyContent: 'space-around',
-    width: '40%',
-    marginBottom: 30,
-    marginTop: 20,
-    backgroundColor: '#100A45',
-  },
-  saveButtonTextStyle: {color: '#fff'},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
     alignItems: 'center',
   },
   warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
-  errorTextStyle: {textAlign: 'center'},
+  errorTextStyle: {
+    textAlign: 'center',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
     height: responsiveScreenHeight(5),
@@ -541,6 +559,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(2),
   },
 });

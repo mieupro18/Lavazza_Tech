@@ -1,11 +1,10 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ProductConfig from '../screens/productConfiguration';
 import DeviceConfig from '../screens/deviceConfiguration';
@@ -13,10 +12,10 @@ import WifiConfig from '../screens/wifiConfiguration';
 import SettingConfig from '../screens/settings';
 
 DeviceConfig.navigationOptions = {
-  tabBarLabel: 'Device Identity',
+  tabBarLabel: 'Device',
   tabBarIcon: ({tintColor}) => (
     <View>
-      <FontAwesome5 style={[{color: tintColor}]} size={22} name={'list'} />
+      <FontAwesome5 style={[{color: tintColor}]} size={22} name={'server'} />
     </View>
   ),
   activeColor: '#fff',
@@ -24,7 +23,7 @@ DeviceConfig.navigationOptions = {
 };
 
 ProductConfig.navigationOptions = {
-  tabBarLabel: 'Product Info',
+  tabBarLabel: 'Product',
   tabBarIcon: ({tintColor}) => (
     <View>
       <FontAwesome5 style={[{color: tintColor}]} size={22} name={'mug-hot'} />
@@ -35,7 +34,7 @@ ProductConfig.navigationOptions = {
 };
 
 WifiConfig.navigationOptions = {
-  tabBarLabel: 'Wifi Info',
+  tabBarLabel: 'Wifi',
   tabBarIcon: ({tintColor}) => (
     <View>
       <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />
