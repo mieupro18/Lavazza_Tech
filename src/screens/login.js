@@ -124,7 +124,7 @@ export default class Login extends Component {
                   }}
                   keyboardType="visible-password"
                   blurOnSubmit={false}
-                  fontSize={responsiveScreenFontSize(1.5)}
+                  fontSize={responsiveScreenFontSize(1.8)}
                   onChangeText={username => (this.state.userName = username)}
                 />
                 <TextInput
@@ -135,7 +135,7 @@ export default class Login extends Component {
                     this.password = input;
                   }}
                   placeholder="Password"
-                  fontSize={responsiveScreenFontSize(1.5)}
+                  fontSize={responsiveScreenFontSize(1.8)}
                   onChangeText={password => (this.state.password = password)}
                 />
               </View>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   loginTextStyle: {
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
   },
   textInput: {
