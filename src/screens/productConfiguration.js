@@ -97,8 +97,8 @@ class ConfigurationScreen extends React.Component {
       });
   };
 
-  // Send Edit product request to server
-  editProducts = async () => {
+  // Send save product request to server
+  saveProductDetails = async () => {
     var isInvalidConfiguration = false;
 
     Object.keys(this.state.deviceProductInfo).map(productKey => {
@@ -405,7 +405,7 @@ class ConfigurationScreen extends React.Component {
                           iconLeft
                           style={styles.buttonStyle}
                           onPress={() => {
-                            this.editProducts();
+                            this.saveProductDetails();
                           }}>
                           <Icon
                             name="checkmark-circle"
