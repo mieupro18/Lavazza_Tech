@@ -264,7 +264,7 @@ class WifiInfo extends Component {
                         keyboardType="visible-password"
                         style={styles.textInput}
                         maxLength={32}
-                        fontSize={responsiveScreenFontSize(1.8)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />
                     </Item>
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   card: {
     width: '90%',
@@ -369,12 +369,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '50%',
+    width: '60%',
     alignSelf: 'center',
     borderRadius: 10,
   },
   cardHeaderTextStyle: {
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -390,11 +390,11 @@ const styles = StyleSheet.create({
   keyTextContainer: {width: '50%', padding: '3%'},
   valueTextContainer: {width: '50%', padding: '3%'},
   keyTextStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
     color: '#100A45',
     fontWeight: 'bold',
   },
-  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.5)},
   buttonStyle: {
     justifyContent: 'center',
     width: '40%',
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
   cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
     fontWeight: 'bold',
   },
   textInput: {
@@ -443,7 +443,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
+  cancelButtonTextStyle: {
+    color: '#000',
+    fontSize: responsiveScreenFontSize(1.5),
+  },
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -455,7 +458,7 @@ const styles = StyleSheet.create({
   },
   errorTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
@@ -468,6 +471,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.5),
   },
 });

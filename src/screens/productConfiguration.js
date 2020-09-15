@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   card: {
     width: '90%',
@@ -489,22 +489,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '50%',
+    width: '60%',
     alignSelf: 'center',
     borderRadius: 10,
   },
   cardHeaderTextStyle: {
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
     color: '#fff',
   },
   rowStyle: {padding: responsiveScreenHeight(1), marginTop: '2%'},
   columnKeyStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
     fontWeight: 'bold',
     color: '#100A45',
   },
-  columnValueStyle: {fontSize: responsiveScreenFontSize(1.8)},
+  columnValueStyle: {fontSize: responsiveScreenFontSize(1.5)},
   bodyViewContainer: {
     flexDirection: 'row',
     padding: 2,
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   formLableStyle: {
     color: '#100A45',
     fontWeight: 'bold',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
   cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cancelButtonStyle: {
     justifyContent: 'center',
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
+  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(1.5)},
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
   warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
   errorTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
@@ -570,6 +570,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.5),
   },
 });

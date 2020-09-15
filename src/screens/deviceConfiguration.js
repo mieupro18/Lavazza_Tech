@@ -304,7 +304,7 @@ class DeviceInfo extends Component {
                       <TextInput
                         defaultValue={this.state.deviceData.deviceId}
                         style={styles.textInput}
-                        fontSize={responsiveScreenFontSize(1.8)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         keyboardType="visible-password"
                         maxLength={100}
                         onSubmitEditing={() => {
@@ -327,7 +327,7 @@ class DeviceInfo extends Component {
                           this.deviceName = input;
                         }}
                         maxLength={100}
-                        fontSize={responsiveScreenFontSize(1.8)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceName =>
                           (this.state.deviceName = deviceName)
                         }
@@ -345,7 +345,6 @@ class DeviceInfo extends Component {
                           this.setState({deviceType: value});
                         }}>
                         <Picker.Item
-                          fontSize={10}
                           color="grey"
                           label="---Select Type---"
                           value=""
@@ -457,7 +456,7 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   card: {
     width: '90%',
@@ -468,25 +467,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '50%',
+    width: '60%',
     alignSelf: 'center',
     borderRadius: responsiveScreenWidth(2),
   },
   cardHeaderTextStyle: {
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
     color: '#fff',
   },
   flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
   flexColumnContainer: {flex: 1, flexDirection: 'column'},
   keyTextStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
     color: '#100A45',
     fontWeight: 'bold',
   },
   keyTextContainer: {width: '50%', padding: '3%'},
   valueTextContainer: {width: '50%', padding: '3%'},
-  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.5)},
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -501,7 +500,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(2), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
   cancelButtonStyle: {
     justifyContent: 'center',
     width: '40%',
@@ -510,7 +509,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(2)},
+  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(1.5)},
   cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
@@ -522,7 +521,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
     fontWeight: 'bold',
   },
   textInput: {
@@ -546,7 +545,7 @@ const styles = StyleSheet.create({
   warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
   errorTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   tryAgainButtonStyle: {
     width: responsiveScreenWidth(25),
@@ -559,6 +558,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(2),
+    fontSize: responsiveScreenFontSize(1.5),
   },
 });
