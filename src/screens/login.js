@@ -16,20 +16,7 @@ import {
   responsiveScreenFontSize,
 } from 'react-native-responsive-dimensions';
 
-const technicianLoginCredentials = [
-  {
-    username: '1',
-    password: '123',
-  },
-  {
-    username: 'admin',
-    password: 'admin',
-  },
-  {
-    username: '!@V@ZZ@TECH',
-    password: 'TECH456',
-  },
-];
+import {TECHNICIAN_LOGIN_CREDENTIALS} from '../utilities/macros';
 
 export default class Login extends Component {
   constructor(props) {
@@ -70,7 +57,7 @@ export default class Login extends Component {
         this.state.connectionType === 'wifi' &&
         this.state.isConnected === true
       ) {
-        let matchedLoginCredentials = technicianLoginCredentials.find(
+        let matchedLoginCredentials = TECHNICIAN_LOGIN_CREDENTIALS.find(
           loginDetails =>
             loginDetails.username === this.state.userName &&
             loginDetails.password === this.state.password,
@@ -123,7 +110,7 @@ export default class Login extends Component {
                     this.password.focus();
                   }}
                   blurOnSubmit={false}
-                  fontSize={responsiveScreenFontSize(1.8)}
+                  fontSize={responsiveScreenFontSize(1.5)}
                   onChangeText={username => (this.state.userName = username)}
                 />
                 <TextInput
@@ -134,7 +121,7 @@ export default class Login extends Component {
                     this.password = input;
                   }}
                   placeholder="Password"
-                  fontSize={responsiveScreenFontSize(1.8)}
+                  fontSize={responsiveScreenFontSize(1.5)}
                   onChangeText={password => (this.state.password = password)}
                 />
               </View>
