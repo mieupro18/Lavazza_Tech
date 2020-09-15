@@ -122,7 +122,6 @@ export default class Login extends Component {
                   onSubmitEditing={() => {
                     this.password.focus();
                   }}
-                  keyboardType="visible-password"
                   blurOnSubmit={false}
                   fontSize={responsiveScreenFontSize(1.8)}
                   onChangeText={username => (this.state.userName = username)}
