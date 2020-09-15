@@ -221,13 +221,13 @@ class WifiInfo extends Component {
           ) : this.state.wifiInfo !== null ? (
             <Card style={styles.card}>
               <CardItem header style={styles.cardHeader}>
-                <Text style={styles.cardHeaderTextStyle}>Wifi Info</Text>
+                <Text style={styles.cardHeaderTextStyle}>Wi-Fi Info</Text>
               </CardItem>
               {this.state.isEditWifiInfo === false ? (
                 <CardItem style={styles.flexColumnContainer}>
                   <View style={styles.flexRowContainer}>
                     <View style={styles.keyTextContainer}>
-                      <Text style={styles.keyTextStyle}>Wifi SSID</Text>
+                      <Text style={styles.keyTextStyle}>Wi-Fi SSID</Text>
                     </View>
                     <View style={styles.valueTextContainer}>
                       <Text style={styles.valueTextStyle}>
@@ -256,7 +256,7 @@ class WifiInfo extends Component {
                 <CardItem style={styles.cardItemForm}>
                   <Form style={styles.formStyle}>
                     <Item style={styles.formItemTransparentStyle}>
-                      <Label style={styles.labelStyle}>Wifi SSID</Label>
+                      <Label style={styles.labelStyle}>Wi-Fi SSID</Label>
                     </Item>
                     <Item style={styles.formItemStyle}>
                       <TextInput
@@ -264,7 +264,7 @@ class WifiInfo extends Component {
                         keyboardType="visible-password"
                         style={styles.textInput}
                         maxLength={32}
-                        fontSize={responsiveScreenFontSize(1.5)}
+                        //fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />
                     </Item>
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '60%',
+    width: '75%',
     alignSelf: 'center',
     borderRadius: 10,
   },
@@ -390,11 +390,11 @@ const styles = StyleSheet.create({
   keyTextContainer: {width: '50%', padding: '3%'},
   valueTextContainer: {width: '50%', padding: '3%'},
   keyTextStyle: {
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     color: '#100A45',
     fontWeight: 'bold',
   },
-  valueTextStyle: {fontSize: responsiveScreenFontSize(1.5)},
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
   buttonStyle: {
     justifyContent: 'center',
     width: '40%',
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.8), color: '#fff'},
   cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
   },
   textInput: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   },
   cancelButtonTextStyle: {
     color: '#000',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
   errorContainer: {
     marginLeft: 'auto',
@@ -471,6 +471,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
 });
