@@ -60,7 +60,7 @@ class SettingConfig extends Component {
         } else if (resultData.status === FAILURE) {
           if (resultData.infoText === CONFIG_ERROR) {
             ToastAndroid.showWithGravityAndOffset(
-              'Failure : Please provision all the device configurations ',
+              'Failed: Please provision all the device configurations ',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
@@ -68,7 +68,7 @@ class SettingConfig extends Component {
             );
           } else {
             ToastAndroid.showWithGravityAndOffset(
-              'Failure : Something went wrong',
+              'Failed: Something went wrong',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
@@ -81,7 +81,7 @@ class SettingConfig extends Component {
       .catch(e => {
         console.log(e);
         ToastAndroid.showWithGravityAndOffset(
-          'Failure : Check your Wifi connection with the lavazza caffè machine ',
+          'Failed: Check your Wifi connection with the lavazza caffè machine ',
           ToastAndroid.LONG,
           ToastAndroid.CENTER,
           25,
@@ -103,7 +103,7 @@ class SettingConfig extends Component {
       .then(async resultData => {
         if (resultData.status === SUCCESS) {
           ToastAndroid.showWithGravityAndOffset(
-            'Success : Clear Device Data Initiated',
+            'Success: Clear Device Data Initiated',
             ToastAndroid.LONG,
             ToastAndroid.CENTER,
             25,
@@ -113,7 +113,7 @@ class SettingConfig extends Component {
         } else if (resultData.status === FAILURE) {
           if (resultData.infoText === CONFIG_ERROR) {
             ToastAndroid.showWithGravityAndOffset(
-              'Failure : Clear data functionality works only after provisioning the device',
+              'Failed: Clear data functionality works only after provisioning the device',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
@@ -121,7 +121,7 @@ class SettingConfig extends Component {
             );
           } else {
             ToastAndroid.showWithGravityAndOffset(
-              'Failure : Something went wrong',
+              'Failed: Something went wrong',
               ToastAndroid.LONG,
               ToastAndroid.CENTER,
               25,
@@ -134,7 +134,7 @@ class SettingConfig extends Component {
       .catch(e => {
         console.log(e);
         ToastAndroid.showWithGravityAndOffset(
-          'Failure : Check your Wifi connection with the lavazza caffè machine ',
+          'Failed: Check your Wifi connection with the lavazza caffè machine ',
           ToastAndroid.LONG,
           ToastAndroid.CENTER,
           25,
@@ -170,12 +170,12 @@ class SettingConfig extends Component {
                 <View style={styles.flexRowContainer}>
                   <View style={styles.keyTextContainer}>
                     <Text style={styles.keyTextStyle}>
-                      Reboot{'\n'}Instruction
+                      Reboot {'\n'}Instruction
                     </Text>
                   </View>
                   <View style={styles.valueTextContainer}>
                     <Text style={styles.valueTextStyle}>
-                      To restart the device,{'\n'}Press 'Reboot' button
+                      To restart the device, Press 'Reboot' button
                     </Text>
                   </View>
                 </View>
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   },
   spinnerTextStyle: {
     textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.8),
+    fontSize: responsiveScreenFontSize(1.5),
   },
   card: {
     width: '90%',

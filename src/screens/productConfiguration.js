@@ -548,7 +548,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(1.8)},
+  cancelButtonTextStyle: {
+    color: '#000',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',

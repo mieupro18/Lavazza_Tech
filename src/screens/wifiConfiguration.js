@@ -264,7 +264,7 @@ class WifiInfo extends Component {
                         keyboardType="visible-password"
                         style={styles.textInput}
                         maxLength={32}
-                        //fontSize={responsiveScreenFontSize(1.5)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={ssid => (this.state.ssid = ssid)}
                       />
                     </Item>

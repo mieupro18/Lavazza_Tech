@@ -304,7 +304,7 @@ class DeviceInfo extends Component {
                       <TextInput
                         defaultValue={this.state.deviceData.deviceId}
                         style={styles.textInput}
-                        //fontSize={responsiveScreenFontSize(1.5)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         keyboardType="visible-password"
                         maxLength={100}
                         onSubmitEditing={() => {
@@ -327,7 +327,7 @@ class DeviceInfo extends Component {
                           this.deviceName = input;
                         }}
                         maxLength={100}
-                        //fontSize={responsiveScreenFontSize(1.5)}
+                        fontSize={responsiveScreenFontSize(1.5)}
                         onChangeText={deviceName =>
                           (this.state.deviceName = deviceName)
                         }
