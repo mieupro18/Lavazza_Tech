@@ -32,6 +32,7 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import {SERVER_URL, TOKEN, SUCCESS} from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
+import {commonStyles} from '../utilities/commonStyleSheet';
 
 class ConfigurationScreen extends React.Component {
   constructor(props) {
@@ -195,10 +196,10 @@ class ConfigurationScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
+      <SafeAreaView style={commonStyles.mainContainer}>
+        <View style={commonStyles.headerContainer}>
           <Image
-            style={styles.logoStyleInHeader}
+            style={commonStyles.logoStyleInHeader}
             source={require('../../assets/lavazza_white_logo.png')}
           />
         </View>
@@ -215,17 +216,19 @@ class ConfigurationScreen extends React.Component {
             />
           }>
           {this.state.isLoading === true ? (
-            <View style={styles.spinnerContainer}>
+            <View style={commonStyles.spinnerContainer}>
               <Spinner color="#100A45" size={30} />
-              <Text style={styles.spinnerTextStyle}>
+              <Text style={commonStyles.spinnerTextStyle}>
                 Loading...{'\n'}Please Wait!
               </Text>
             </View>
           ) : this.state.deviceProductInfo !== null ? (
             <View style={{}}>
-              <Card style={styles.card}>
-                <CardItem header style={styles.cardHeader}>
-                  <Text style={styles.cardHeaderTextStyle}>Products Info</Text>
+              <Card style={commonStyles.card}>
+                <CardItem header style={commonStyles.cardHeader}>
+                  <Text style={commonStyles.cardHeaderTextStyle}>
+                    Products Info
+                  </Text>
                 </CardItem>
                 <CardItem>
                   <Body>
@@ -364,24 +367,26 @@ class ConfigurationScreen extends React.Component {
                       <Button
                         rounded
                         iconLeft
-                        style={styles.buttonStyle}
+                        style={commonStyles.buttonStyle}
                         onPress={async () => {
                           this.setState({isEditProducts: true});
                         }}>
                         <Icon
                           name="create-outline"
-                          style={styles.buttonIconStyle}
+                          style={commonStyles.buttonIconStyle}
                         />
-                        <Text uppercase={false} style={styles.buttonTextStyle}>
+                        <Text
+                          uppercase={false}
+                          style={commonStyles.buttonTextStyle}>
                           Edit
                         </Text>
                       </Button>
                     ) : (
-                      <View style={styles.buttonContainer}>
+                      <View style={commonStyles.buttonContainer}>
                         <Button
                           rounded
                           iconLeft
-                          style={styles.cancelButtonStyle}
+                          style={commonStyles.cancelButtonStyle}
                           onPress={async () => {
                             this.setState({isEditProducts: false});
                             for (var key in this.state.deviceProductInfo) {
@@ -392,28 +397,28 @@ class ConfigurationScreen extends React.Component {
                           }}>
                           <Icon
                             name="close-circle"
-                            style={styles.cancelButtonIconStyle}
+                            style={commonStyles.cancelButtonIconStyle}
                           />
                           <Text
                             uppercase={false}
-                            style={styles.cancelButtonTextStyle}>
+                            style={commonStyles.cancelButtonTextStyle}>
                             Cancel
                           </Text>
                         </Button>
                         <Button
                           rounded
                           iconLeft
-                          style={styles.buttonStyle}
+                          style={commonStyles.buttonStyle}
                           onPress={() => {
                             this.saveProductDetails();
                           }}>
                           <Icon
                             name="checkmark-circle"
-                            style={styles.buttonIconStyle}
+                            style={commonStyles.buttonIconStyle}
                           />
                           <Text
                             uppercase={false}
-                            style={styles.buttonTextStyle}>
+                            style={commonStyles.buttonTextStyle}>
                             Save
                           </Text>
                         </Button>
@@ -424,27 +429,27 @@ class ConfigurationScreen extends React.Component {
               </Card>
             </View>
           ) : (
-            <View style={styles.errorContainer}>
+            <View style={commonStyles.errorContainer}>
               <Entypo
                 name="warning"
-                style={styles.warningImageStyle}
+                style={commonStyles.warningImageStyle}
                 size={responsiveScreenHeight(10)}
               />
 
-              <Text style={styles.errorTextStyle}>
+              <Text style={commonStyles.errorTextStyle}>
                 Something went wrong...!
               </Text>
-              <Text style={styles.errorTextStyle}>
+              <Text style={commonStyles.errorTextStyle}>
                 Please check your wifi connection
               </Text>
               <TouchableHighlight
                 underlayColor="#100A45"
-                style={styles.tryAgainButtonStyle}
+                style={commonStyles.tryAgainButtonStyle}
                 onPress={async () => {
                   await this.setStateToInitialState();
                   await this.fetchProductData();
                 }}>
-                <Text style={styles.tryAgainButtonTextStyle}>Reload</Text>
+                <Text style={commonStyles.tryAgainButtonTextStyle}>Reload</Text>
               </TouchableHighlight>
             </View>
           )}
@@ -457,47 +462,6 @@ class ConfigurationScreen extends React.Component {
 export default ConfigurationScreen;
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
-  headerContainer: {
-    backgroundColor: '#100A45',
-    height: responsiveScreenHeight(7),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoStyleInHeader: {
-    width: responsiveScreenWidth(50),
-    height: responsiveScreenHeight(5),
-    resizeMode: 'contain',
-  },
-  spinnerContainer: {
-    justifyContent: 'center',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  spinnerTextStyle: {
-    textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.5),
-  },
-  card: {
-    width: '90%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  cardHeader: {
-    justifyContent: 'center',
-    backgroundColor: '#100A45',
-    height: responsiveScreenHeight(3),
-    width: '75%',
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  cardHeaderTextStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
-    fontWeight: 'bold',
-    color: '#fff',
-  },
   rowStyle: {padding: responsiveScreenHeight(1), marginTop: '2%'},
   columnKeyStyle: {
     fontSize: responsiveScreenFontSize(1.8),
@@ -522,57 +486,6 @@ const styles = StyleSheet.create({
   formLableStyle: {
     color: '#100A45',
     fontWeight: 'bold',
-    fontSize: responsiveScreenFontSize(1.8),
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
-  },
-  buttonStyle: {
-    justifyContent: 'center',
-    width: '40%',
-    marginTop: '5%',
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    backgroundColor: '#100A45',
-  },
-  buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.8), color: '#fff'},
-  cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
-  cancelButtonStyle: {
-    justifyContent: 'center',
-    width: '40%',
-    marginTop: '5%',
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    backgroundColor: '#f1f2f6',
-  },
-  cancelButtonTextStyle: {
-    color: '#000',
-    fontSize: responsiveScreenFontSize(1.8),
-  },
-  errorContainer: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    alignItems: 'center',
-  },
-  warningImageStyle: {color: '#CECDCB', marginTop: '10%'},
-  errorTextStyle: {
-    textAlign: 'center',
-    fontSize: responsiveScreenFontSize(1.5),
-  },
-  tryAgainButtonStyle: {
-    width: responsiveScreenWidth(25),
-    height: responsiveScreenHeight(5),
-    borderRadius: responsiveScreenHeight(1),
-    backgroundColor: '#100A45',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: responsiveScreenHeight(2),
-  },
-  tryAgainButtonTextStyle: {
-    color: 'white',
     fontSize: responsiveScreenFontSize(1.8),
   },
 });
