@@ -11,11 +11,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {Card, CardItem, Button, Spinner, Icon} from 'native-base';
-import {
-  responsiveScreenHeight,
-  responsiveScreenWidth,
-  responsiveScreenFontSize,
-} from 'react-native-responsive-dimensions';
+import {responsiveScreenFontSize} from 'react-native-responsive-dimensions';
+import {commonStyles} from '../utilities/commonStyleSheet';
 
 import {
   SERVER_URL,
@@ -146,39 +143,36 @@ class SettingConfig extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <View style={styles.headerContainer}>
+      <SafeAreaView style={commonStyles.mainContainer}>
+        <View style={commonStyles.headerContainer}>
           <Image
-            style={styles.logoStyleInHeader}
+            style={commonStyles.logoStyleInHeader}
             source={require('../../assets/lavazza_white_logo.png')}
           />
         </View>
         <ScrollView>
           {this.state.isLoading === true ? (
-            <View style={styles.spinnerContainer}>
+            <View style={commonStyles.spinnerContainer}>
               <Spinner color="#100A45" size={30} />
-              <Text style={styles.spinnerTextStyle}>
+              <Text style={commonStyles.spinnerTextStyle}>
                 Loading...{'\n'}Please Wait!
               </Text>
             </View>
           ) : (
-            <Card style={styles.card}>
-              <CardItem header style={styles.cardHeader}>
-                <Text style={styles.cardHeaderTextStyle}>Settings</Text>
+            <Card style={commonStyles.card}>
+              <CardItem header style={commonStyles.cardHeader}>
+                <Text style={commonStyles.cardHeaderTextStyle}>Settings</Text>
               </CardItem>
-              <CardItem style={styles.flexColumnContainer}>
-                <View style={styles.flexRowContainer}>
-                  <View style={styles.keyTextContainer}>
-                    <Text style={styles.keyTextStyle}>
-                      Reboot {'\n'}Instruction
-                    </Text>
-                  </View>
-                  <View style={styles.valueTextContainer}>
-                    <Text style={styles.valueTextStyle}>
-                      To restart the device, Press 'Reboot' button
-                    </Text>
-                  </View>
-                </View>
+              <CardItem>
+                <Text style={styles.instructionKeyStyle}>
+                  Reboot Instruction
+                </Text>
+              </CardItem>
+
+              <CardItem>
+                <Text style={styles.instructionValueStyle}>
+                  To restart the device, Press 'Reboot' button.
+                </Text>
               </CardItem>
               <CardItem>
                 <Button
@@ -200,21 +194,18 @@ class SettingConfig extends Component {
                   <Text style={styles.buttonTextStyle}>Reboot</Text>
                 </Button>
               </CardItem>
-              <CardItem style={styles.flexColumnContainer}>
-                <View style={styles.flexRowContainer}>
-                  <View style={styles.keyTextContainer}>
-                    <Text style={styles.keyTextStyle}>
-                      Clear Data {'\n'}Instruction
-                    </Text>
-                  </View>
-                  <View style={styles.valueTextContainer}>
-                    <Text style={styles.valueTextStyle}>
-                      To clear all the device data such as device
-                      identity,product list and wifi ssid, Press 'Clear Data'
-                      button
-                    </Text>
-                  </View>
-                </View>
+              <CardItem>
+                <Text style={styles.instructionKeyStyle}>
+                  Clear Data Instruction
+                </Text>
+              </CardItem>
+
+              <CardItem>
+                <Text style={styles.instructionValueStyle}>
+                  To clear all the configured device data (i.e., Device
+                  Identity, Product List and Wi-Fi SSID), Press 'Clear Data'
+                  button.
+                </Text>
               </CardItem>
               <CardItem>
                 <Button
@@ -247,61 +238,18 @@ class SettingConfig extends Component {
 export default SettingConfig;
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
-  headerContainer: {
-    backgroundColor: '#100A45',
-    height: responsiveScreenHeight(7),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoStyleInHeader: {
-    width: responsiveScreenWidth(50),
-    height: responsiveScreenHeight(5),
-    resizeMode: 'contain',
-  },
-  spinnerContainer: {
-    justifyContent: 'center',
-    marginLeft: 'auto',
+  instructionValueStyle: {
+    //alignSelf: 'center',
     marginRight: 'auto',
-  },
-  spinnerTextStyle: {
-    textAlign: 'center',
+    marginLeft: 'auto',
     fontSize: responsiveScreenFontSize(1.5),
   },
-  card: {
-    width: '90%',
-    marginLeft: 'auto',
+  instructionKeyStyle: {
+    //alignSelf: 'center',
     marginRight: 'auto',
-  },
-  cardHeader: {
-    justifyContent: 'center',
-    backgroundColor: '#100A45',
-    height: responsiveScreenHeight(3),
-    width: '75%',
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  cardHeaderTextStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
+    marginLeft: 'auto',
     fontWeight: 'bold',
-    color: '#fff',
-  },
-  flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
-  flexColumnContainer: {flex: 1, flexDirection: 'column'},
-  keyTextContainer: {width: '50%', padding: '3%'},
-  valueTextContainer: {width: '50%', padding: '3%'},
-  keyTextStyle: {
-    fontSize: responsiveScreenFontSize(1.8),
-    color: '#100A45',
-    fontWeight: 'bold',
-  },
-  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
-  buttonContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
+    fontSize: responsiveScreenFontSize(1.5),
   },
   buttonStyle: {
     justifyContent: 'center',
