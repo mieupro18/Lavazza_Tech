@@ -225,7 +225,7 @@ class ConfigurationScreen extends React.Component {
             <View style={{}}>
               <Card style={styles.card}>
                 <CardItem header style={styles.cardHeader}>
-                  <Text style={styles.cardHeaderTextStyle}>Product Info</Text>
+                  <Text style={styles.cardHeaderTextStyle}>Products Info</Text>
                 </CardItem>
                 <CardItem>
                   <Body>
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '60%',
+    width: '75%',
     alignSelf: 'center',
     borderRadius: 10,
   },
@@ -500,11 +500,11 @@ const styles = StyleSheet.create({
   },
   rowStyle: {padding: responsiveScreenHeight(1), marginTop: '2%'},
   columnKeyStyle: {
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
     color: '#100A45',
   },
-  columnValueStyle: {fontSize: responsiveScreenFontSize(1.5)},
+  columnValueStyle: {fontSize: responsiveScreenFontSize(1.8)},
   bodyViewContainer: {
     flexDirection: 'row',
     padding: 2,
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   formLableStyle: {
     color: '#100A45',
     fontWeight: 'bold',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.8), color: '#fff'},
   cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
   cancelButtonStyle: {
     justifyContent: 'center',
@@ -548,7 +548,10 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(1.5)},
+  cancelButtonTextStyle: {
+    color: '#000',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
   errorContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -570,6 +573,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
 });

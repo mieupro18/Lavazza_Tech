@@ -210,6 +210,6 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
 });

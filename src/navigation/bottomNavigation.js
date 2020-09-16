@@ -23,7 +23,7 @@ DeviceConfig.navigationOptions = {
 };
 
 ProductConfig.navigationOptions = {
-  tabBarLabel: 'Product',
+  tabBarLabel: 'Products',
   tabBarIcon: ({tintColor}) => (
     <View>
       <FontAwesome5 style={[{color: tintColor}]} size={22} name={'mug-hot'} />
@@ -34,7 +34,7 @@ ProductConfig.navigationOptions = {
 };
 
 WifiConfig.navigationOptions = {
-  tabBarLabel: 'Wifi',
+  tabBarLabel: 'Wi-Fi',
   tabBarIcon: ({tintColor}) => (
     <View>
       <FontAwesome style={[{color: tintColor}]} size={22} name={'wifi'} />

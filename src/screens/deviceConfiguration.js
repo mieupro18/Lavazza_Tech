@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#100A45',
     height: responsiveScreenHeight(3),
-    width: '60%',
+    width: '75%',
     alignSelf: 'center',
     borderRadius: responsiveScreenWidth(2),
   },
@@ -479,13 +479,13 @@ const styles = StyleSheet.create({
   flexRowContainer: {flexDirection: 'row', marginTop: '5%'},
   flexColumnContainer: {flex: 1, flexDirection: 'column'},
   keyTextStyle: {
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     color: '#100A45',
     fontWeight: 'bold',
   },
   keyTextContainer: {width: '50%', padding: '3%'},
   valueTextContainer: {width: '50%', padding: '3%'},
-  valueTextStyle: {fontSize: responsiveScreenFontSize(1.5)},
+  valueTextStyle: {fontSize: responsiveScreenFontSize(1.8)},
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#100A45',
   },
   buttonIconStyle: {marginLeft: 'auto'},
-  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.5), color: '#fff'},
+  buttonTextStyle: {fontSize: responsiveScreenFontSize(1.8), color: '#fff'},
   cancelButtonStyle: {
     justifyContent: 'center',
     width: '40%',
@@ -509,8 +509,14 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f1f2f6',
   },
-  cancelButtonTextStyle: {color: '#000', fontSize: responsiveScreenFontSize(1.5)},
-  cancelButtonIconStyle: {marginLeft: 'auto', color: '#000'},
+  cancelButtonTextStyle: {
+    color: '#000',
+    fontSize: responsiveScreenFontSize(1.8),
+  },
+  cancelButtonIconStyle: {
+    marginLeft: 'auto',
+    color: '#000',
+  },
   cardItemForm: {flexDirection: 'column', alignItems: 'flex-start'},
   formStyle: {width: '100%'},
   formItemTransparentStyle: {
@@ -521,7 +527,7 @@ const styles = StyleSheet.create({
   formItemStyle: {alignSelf: 'center'},
   labelStyle: {
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
     fontWeight: 'bold',
   },
   textInput: {
@@ -558,6 +564,6 @@ const styles = StyleSheet.create({
   },
   tryAgainButtonTextStyle: {
     color: 'white',
-    fontSize: responsiveScreenFontSize(1.5),
+    fontSize: responsiveScreenFontSize(1.8),
   },
 });
