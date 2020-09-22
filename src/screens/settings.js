@@ -376,12 +376,12 @@ class SettingConfig extends Component {
                     </CardItem>
                     <CardItem>
                       <Text style={styles.instructionValueStyle}>
-                        For additional settings, Press settings icon below,
+                        For additional settings, Press plus icon below,
                       </Text>
                     </CardItem>
                     <CardItem>
                       <Icon
-                        name="md-settings"
+                        name="ios-add-circle"
                         style={styles.additionalSettingsIcon}
                         onPress={async () => {
                           this.requestAdditionalSettings();
