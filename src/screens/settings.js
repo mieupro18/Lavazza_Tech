@@ -33,7 +33,7 @@ import {
 } from '../utilities/macros';
 import getTimeoutSignal from '../utilities/commonApis';
 
-const lowEnd = 3,
+const lowEnd = 5,
   highEnd = 35;
 
 class SettingConfig extends Component {
@@ -376,18 +376,16 @@ class SettingConfig extends Component {
                     </CardItem>
                     <CardItem>
                       <Text style={styles.instructionValueStyle}>
-                        For additional settings, Press plus icon below,
+                        For additional settings, Press the icon below
                       </Text>
                     </CardItem>
-                    <CardItem>
-                      <Icon
-                        name="ios-add-circle"
-                        style={styles.additionalSettingsIcon}
-                        onPress={async () => {
-                          this.requestAdditionalSettings();
-                        }}
-                      />
-                    </CardItem>
+                    <Icon
+                      name="md-chevron-forward-circle-sharp"
+                      style={styles.additionalSettingsIcon}
+                      onPress={async () => {
+                        this.requestAdditionalSettings();
+                      }}
+                    />
                   </Card>
                 </View>
               ) : (
@@ -546,9 +544,9 @@ const styles = StyleSheet.create({
   additionalSettingsIcon: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: '2%',
     color: '#100A45',
-    fontSize: responsiveScreenFontSize(4),
+    alignSelf: 'center',
+    fontSize: responsiveScreenFontSize(5),
   },
   additionalSettingsTextStyle: {marginRight: 'auto', marginLeft: 'auto'},
   instructionValueStyle: {
